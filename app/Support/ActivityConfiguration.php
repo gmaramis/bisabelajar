@@ -3,6 +3,8 @@
 namespace App\Support;
 
 use App\Enums\ActivityType;
+use App\Enums\CompletionRule;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 final class ActivityConfiguration
@@ -26,12 +28,16 @@ final class ActivityConfiguration
      */
     public static function studentKeys(ActivityType $type): array
     {
-        return match ($type) {
+        $keys = match ($type) {
             ActivityType::Lesson, ActivityType::Assignment, ActivityType::Project => ['instructions'],
             ActivityType::Quiz, ActivityType::Exam => ['instructions', 'max_attempts', 'time_limit_minutes'],
             ActivityType::CodingExercise => ['instructions', 'language'],
             ActivityType::Discussion => ['instructions', 'prompt'],
         };
+
+        $keys[] = 'completion_rule';
+
+        return $keys;
     }
 
     /**
@@ -89,6 +95,7 @@ final class ActivityConfiguration
             'configuration.max_attempts' => ['nullable', 'integer', 'min:1', 'max:20'],
             'configuration.time_limit_minutes' => ['nullable', 'integer', 'min:1', 'max:600'],
             'configuration.language' => ['nullable', 'string', 'max:32'],
+            'configuration.completion_rule' => ['nullable', 'string', Rule::enum(CompletionRule::class)],
             'configuration.tutor' => ['nullable', 'array'],
             'configuration.tutor.notes' => ['nullable', 'string', 'max:10000'],
             'configuration.tutor.answer_key' => ['nullable', 'string', 'max:10000'],

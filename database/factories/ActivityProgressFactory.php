@@ -46,4 +46,13 @@ class ActivityProgressFactory extends Factory
             'started_at' => now(),
         ]);
     }
+
+    public function completed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => ProgressStatus::Completed,
+            'started_at' => now()->subHour(),
+            'completed_at' => now(),
+        ]);
+    }
 }

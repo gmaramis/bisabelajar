@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ActivityStatus;
 use App\Enums\ActivityType;
+use App\Enums\CompletionRule;
 use App\Support\ActivityConfiguration;
 use Database\Factories\ActivityFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -122,5 +123,12 @@ class Activity extends Model
         $configured = $this->configuration['max_attempts'] ?? 1;
 
         return max(1, (int) $configured);
+    }
+
+    public function completionRule(): CompletionRule
+    {
+        $configured = $this->configuration['completion_rule'] ?? CompletionRule::Submission->value;
+
+        return CompletionRule::tryFrom((string) $configured) ?? CompletionRule::Submission;
     }
 }

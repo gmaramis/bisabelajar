@@ -38,6 +38,8 @@ Materials (RICH_TEXT, PDF, POWERPOINT, EXTERNAL_URL) attach to learning units. F
 
 Generic activities attach to learning units with types LESSON, QUIZ, ASSIGNMENT, CODING_EXERCISE, DISCUSSION, PROJECT, and EXAM. Status: DRAFT, PUBLISHED, ARCHIVED. Tutors create, edit, publish, unpublish, archive, and reorder activities in owned courses. Publishing requires the parent course, module, and learning unit to be published. Enrolled students see published activities in order, can open student-safe details, record a start state, and submit a generic payload. Start and submission are not grades or mastery. Multiple attempts are allowed only when configuration permits. Draft and archived activities are inaccessible to students. Type-aware configuration is stored as JSON: student-safe fields (instructions and type metadata) are separate from tutor-private notes, answer keys, rubrics, and expected output. Quiz scoring, assignment grading, and code execution are not enabled.
 
+Activity progress (NOT_STARTED, IN_PROGRESS, COMPLETED) is stored per student enrollment and activity. Completion follows a configurable rule and is not Learning Unit progress or mastery.
+
 Students enroll in accessible published courses. Enrollment is unique per student/course, with status ACTIVE, COMPLETED, or DROPPED. Payment and credits are out of scope.
 
 Students follow Login → Dashboard → My Courses → Course → Module → Learning Unit → Material/Activity. Only active enrollments and published content are shown. Tutor editing remains inaccessible to students.

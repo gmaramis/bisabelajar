@@ -29,6 +29,11 @@ class ActivityPolicy
         return $this->start($user, $activity);
     }
 
+    public function complete(User $user, Activity $activity): bool
+    {
+        return $this->start($user, $activity);
+    }
+
     public function create(User $user, LearningUnit $learningUnit): bool
     {
         return $user->can('update', $learningUnit);

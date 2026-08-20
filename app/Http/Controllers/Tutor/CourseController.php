@@ -57,7 +57,12 @@ class CourseController extends Controller
         $this->authorize('update', $course);
 
         return view('tutor.courses.edit', [
-            'course' => $course->load(['modules.learningUnits', 'enrollments.user', 'enrollments.learningProgress']),
+            'course' => $course->load([
+                'modules.learningUnits.activities',
+                'enrollments.user',
+                'enrollments.learningProgress',
+                'enrollments.activityProgress',
+            ]),
             'visibilities' => CourseVisibility::cases(),
         ]);
     }

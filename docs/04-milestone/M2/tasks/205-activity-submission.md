@@ -1,6 +1,6 @@
 # TASK-205 — Activity Submission
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Create the generic submission layer for supported activities.

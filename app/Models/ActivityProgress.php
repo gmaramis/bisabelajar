@@ -10,10 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Student start/participation state for an Activity.
+ * Student participation/completion state for an Activity.
  *
  * Distinct from Learning Unit progress. Completed is not mastered.
- * Submission and completion rules are later work.
  */
 #[Fillable([
     'enrollment_id',
@@ -62,6 +61,11 @@ class ActivityProgress extends Model
         return $this->status !== ProgressStatus::NotStarted;
     }
 
+    public function isCompleted(): bool
+    {
+        return $this->status === ProgressStatus::Completed;
+    }
+
     public static function statusFor(?self $progress): ProgressStatus
     {
         return $progress?->status ?? ProgressStatus::NotStarted;
@@ -81,6 +85,16 @@ class ActivityProgress extends Model
             $progress->started_at ??= now();
         }
 
+        $progress->save();
+
+        return $progress;
+    }
+
+    public static function markCompleted(Enrollment $enrollment, Activity $activity): self
+    {
+        $progress = static::markStarted($enrollment, $activity);
+        $progress->status = ProgressStatus::Completed;
+        $progress->completed_at ??= now();
         $progress->save();
 
         return $progress;

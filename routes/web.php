@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CourseCatalogController;
 use App\Http\Controllers\LearningMaterialAccessController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student\ActivityCompletionController;
 use App\Http\Controllers\Student\ActivityStartController;
 use App\Http\Controllers\Student\ActivitySubmissionController;
 use App\Http\Controllers\Student\CourseExperienceController;
@@ -55,6 +56,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/complete', [LearningProgressController::class, 'complete'])->name('student.progress.complete');
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/start', [ActivityStartController::class, 'start'])->name('student.activities.start');
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/submissions', [ActivitySubmissionController::class, 'store'])->name('student.activities.submit');
+        Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/complete', [ActivityCompletionController::class, 'complete'])->name('student.activities.complete');
         Route::post('courses/{course:slug}/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
     });
 

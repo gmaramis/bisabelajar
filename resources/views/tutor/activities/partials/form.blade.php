@@ -54,6 +54,15 @@
 </div>
 
 <div>
+    <label for="completion_rule" class="mb-1 block text-sm font-medium">Completion rule</label>
+    <select id="completion_rule" name="configuration[completion_rule]" class="w-full rounded-md border border-slate-300 px-3 py-2">
+        <option value="{{ \App\Enums\CompletionRule::Submission->value }}" @selected(old('configuration.completion_rule', $config['completion_rule'] ?? \App\Enums\CompletionRule::Submission->value) === \App\Enums\CompletionRule::Submission->value)>Submission required</option>
+        <option value="{{ \App\Enums\CompletionRule::Manual->value }}" @selected(old('configuration.completion_rule', $config['completion_rule'] ?? '') === \App\Enums\CompletionRule::Manual->value)>Manual</option>
+    </select>
+    <p class="mt-1 text-xs text-slate-500">Activity completion is not unit progress or mastery. Default requires a valid submission.</p>
+</div>
+
+<div>
     <label for="tutor_notes" class="mb-1 block text-sm font-medium">Tutor notes (private)</label>
     <textarea id="tutor_notes" name="configuration[tutor][notes]" rows="3" class="w-full rounded-md border border-slate-300 px-3 py-2">{{ old('configuration.tutor.notes', $tutorConfig['notes'] ?? '') }}</textarea>
 </div>

@@ -42,6 +42,7 @@
                 @endif
             </ul>
         @endif
+        <p class="mt-4 text-sm text-slate-500">Completion rule: {{ strtoupper($activity->completionRule()->value) }} · Activity completion is not unit progress or mastery.</p>
     </article>
 
     @if (auth()->user()?->isStudent() && $module)
@@ -49,11 +50,21 @@
             $startStatus = \App\Models\ActivityProgress::statusFor($activityProgress ?? null);
         @endphp
         <section class="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <p class="mb-3 text-sm text-slate-500">{{ strtoupper($startStatus->value) }} · Start is not completion or mastery.</p>
+            <p class="mb-3 text-sm text-slate-500">{{ strtoupper($startStatus->value) }} · Activity completion is not unit progress or mastery.</p>
+            @if ($errors->has('completion'))
+                <div class="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {{ $errors->first('completion') }}
+                </div>
+            @endif
             @if ($startStatus === \App\Enums\ProgressStatus::NotStarted)
                 <form method="POST" action="{{ route('student.activities.start', [$course, $module, $learningUnit, $activity]) }}">
                     @csrf
                     <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Start activity</button>
+                </form>
+            @elseif ($startStatus !== \App\Enums\ProgressStatus::Completed)
+                <form method="POST" action="{{ route('student.activities.complete', [$course, $module, $learningUnit, $activity]) }}">
+                    @csrf
+                    <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Mark activity complete</button>
                 </form>
             @endif
         </section>

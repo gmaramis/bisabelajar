@@ -100,12 +100,25 @@
                         <h3 class="font-medium">{{ $enrollment->user->name }}</h3>
                         <p class="text-sm text-slate-500">{{ $enrollment->user->email }} · {{ strtoupper($enrollment->status->value) }}</p>
                         <p class="mt-2 text-sm text-slate-600">Progress is not mastery.</p>
+                        <p class="mt-1 text-sm text-slate-600">Activity progress is not mastery.</p>
                         @if ($publishedUnits->isEmpty())
                             <p class="mt-2 text-sm text-slate-500">No published units.</p>
                         @else
                             <ul class="mt-2 space-y-1 text-sm text-slate-600">
                                 @foreach ($publishedUnits as $unit)
-                                    <li>{{ $unit->title }} · {{ strtoupper(\App\Models\LearningProgress::statusFor($enrollment->learningProgress->firstWhere('learning_unit_id', $unit->id))->value) }}</li>
+                                    <li>
+                                        {{ $unit->title }} · {{ strtoupper(\App\Models\LearningProgress::statusFor($enrollment->learningProgress->firstWhere('learning_unit_id', $unit->id))->value) }}
+                                        @php
+                                            $publishedActivities = $unit->activities->filter->isPublished();
+                                        @endphp
+                                        @if ($publishedActivities->isNotEmpty())
+                                            <ul class="mt-1 ml-4 space-y-1">
+                                                @foreach ($publishedActivities as $activity)
+                                                    <li>{{ $activity->title }} · {{ strtoupper(\App\Models\ActivityProgress::statusFor($enrollment->activityProgress->firstWhere('activity_id', $activity->id))->value) }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </li>
                                 @endforeach
                             </ul>
                         @endif
