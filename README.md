@@ -36,11 +36,11 @@ Learning units belong to a module, have unique slugs per module, and are not mod
 
 Materials (RICH_TEXT, PDF, POWERPOINT, EXTERNAL_URL) attach to learning units. Files are stored privately with generated names. Viewing material does not record mastery.
 
-Generic activities attach to learning units with types LESSON, QUIZ, ASSIGNMENT, CODING_EXERCISE, DISCUSSION, PROJECT, and EXAM. Status: DRAFT, PUBLISHED, ARCHIVED. Tutors create, edit, publish, unpublish, archive, and reorder activities in owned courses. Publishing requires the parent course, module, and learning unit to be published. Draft and archived activities are inaccessible to students. Type-aware configuration is stored as JSON: student-safe fields (instructions and type metadata) are separate from tutor-private notes, answer keys, rubrics, and expected output. Quiz scoring, assignment grading, and code execution are not enabled.
+Generic activities attach to learning units with types LESSON, QUIZ, ASSIGNMENT, CODING_EXERCISE, DISCUSSION, PROJECT, and EXAM. Status: DRAFT, PUBLISHED, ARCHIVED. Tutors create, edit, publish, unpublish, archive, and reorder activities in owned courses. Publishing requires the parent course, module, and learning unit to be published. Enrolled students see published activities in order, can open student-safe details, and can record a start state. Start is not completion or mastery. Draft and archived activities are inaccessible to students. Type-aware configuration is stored as JSON: student-safe fields (instructions and type metadata) are separate from tutor-private notes, answer keys, rubrics, and expected output. Quiz scoring, assignment grading, and code execution are not enabled.
 
 Students enroll in accessible published courses. Enrollment is unique per student/course, with status ACTIVE, COMPLETED, or DROPPED. Payment and credits are out of scope.
 
-Students follow Login → Dashboard → My Courses → Course → Module → Learning Unit → Material. Only active enrollments and published content are shown. Tutor editing remains inaccessible to students.
+Students follow Login → Dashboard → My Courses → Course → Module → Learning Unit → Material/Activity. Only active enrollments and published content are shown. Tutor editing remains inaccessible to students.
 
 Basic unit progress (NOT_STARTED, IN_PROGRESS, COMPLETED) is stored per student enrollment. Completed is not mastered.
 

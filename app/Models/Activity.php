@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Generic learning activity attached to a Learning Unit.
@@ -54,6 +55,11 @@ class Activity extends Model
     public function learningUnit(): BelongsTo
     {
         return $this->belongsTo(LearningUnit::class);
+    }
+
+    public function activityProgress(): HasMany
+    {
+        return $this->hasMany(ActivityProgress::class);
     }
 
     public function isPublished(): bool

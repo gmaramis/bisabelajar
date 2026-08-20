@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Enums\EnrollmentStatus;
 use App\Http\Controllers\Controller;
+use App\Models\ActivityProgress;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\LearningProgress;
@@ -56,6 +57,7 @@ class CourseExperienceController extends Controller
 
         $learningUnit->load([
             'materials' => fn ($query) => $query->published()->orderBy('sort_order'),
+            'activities' => fn ($query) => $query->published()->orderBy('sort_order'),
         ]);
 
         $progress = LearningProgress::markInProgress(
@@ -63,11 +65,18 @@ class CourseExperienceController extends Controller
             $learningUnit,
         );
 
+        $activityProgressById = ActivityProgress::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('activity_id', $learningUnit->activities->pluck('id'))
+            ->get()
+            ->keyBy('activity_id');
+
         return view('student.units.show', [
             'course' => $course,
             'module' => $module,
             'learningUnit' => $learningUnit,
             'progress' => $progress,
+            'activityProgressById' => $activityProgressById,
         ]);
     }
 

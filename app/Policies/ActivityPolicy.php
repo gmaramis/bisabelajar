@@ -17,6 +17,13 @@ class ActivityPolicy
         return $activity->isPublished() && $user->can('learn', $activity->learningUnit);
     }
 
+    public function start(User $user, Activity $activity): bool
+    {
+        return $user->isStudent()
+            && $activity->isPublished()
+            && $user->can('learn', $activity->learningUnit);
+    }
+
     public function create(User $user, LearningUnit $learningUnit): bool
     {
         return $user->can('update', $learningUnit);

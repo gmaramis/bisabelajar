@@ -37,4 +37,21 @@
             @endforeach
         </ul>
     @endif
+
+    <h2 class="mt-8 mb-3 text-lg font-semibold">Activities</h2>
+    @if ($learningUnit->activities->isEmpty())
+        <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">No published activities yet.</p>
+    @else
+        <ol class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            @foreach ($learningUnit->activities as $activity)
+                @php
+                    $activityStatus = \App\Models\ActivityProgress::statusFor($activityProgressById[$activity->id] ?? null);
+                @endphp
+                <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                    <a href="{{ route('activities.show', [$course, $learningUnit, $activity]) }}" class="font-medium hover:underline">{{ $activity->title }}</a>
+                    <p class="text-sm text-slate-500">{{ strtoupper($activity->type->value) }} · {{ strtoupper($activityStatus->value) }}</p>
+                </li>
+            @endforeach
+        </ol>
+    @endif
 @endsection

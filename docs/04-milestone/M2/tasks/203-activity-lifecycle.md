@@ -1,6 +1,6 @@
 # TASK-203 — Activity Lifecycle & Ordering
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Implement activity lifecycle, ordering, and publication behavior.

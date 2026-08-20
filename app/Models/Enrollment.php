@@ -47,6 +47,11 @@ class Enrollment extends Model
         return $this->hasMany(LearningProgress::class);
     }
 
+    public function activityProgress(): HasMany
+    {
+        return $this->hasMany(ActivityProgress::class);
+    }
+
     public function isActive(): bool
     {
         return $this->status === EnrollmentStatus::Active;
