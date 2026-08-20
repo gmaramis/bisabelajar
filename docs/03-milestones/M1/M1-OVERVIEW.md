@@ -5,7 +5,8 @@
 **Application:** BisaBelajar
 **Platform:** AI-VET Learning Platform  
 **Milestone:** M1 — Core Learning Platform  
-**Status:** READY FOR IMPLEMENTATION  
+**Status:** ACCEPTED  
+**Release tag:** `v0.1.0-m1-core`  
 **Pilot:** Fundamental Programming with Python  
 **Primary implementation agent:** Cursor  
 **Autonomous implementation agent:** Hermes  

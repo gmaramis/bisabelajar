@@ -28,7 +28,7 @@
             <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">No learning units yet.</p>
         @else
             <ol class="space-y-3">
-                @foreach ($module->learningUnits as $unit)
+                @foreach ($module->learningUnits as $index => $unit)
                     <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div>
@@ -36,6 +36,19 @@
                                 <p class="text-sm text-slate-500">{{ strtoupper($unit->status->value) }} · {{ $unit->slug }}</p>
                             </div>
                             <div class="flex flex-wrap gap-2 text-sm">
+                                @if ($index > 0)
+                                    @php
+                                        $upOrder = $module->learningUnits->pluck('id')->values()->all();
+                                        [$upOrder[$index - 1], $upOrder[$index]] = [$upOrder[$index], $upOrder[$index - 1]];
+                                    @endphp
+                                    <form method="POST" action="{{ route('tutor.units.reorder', [$course, $module]) }}">
+                                        @csrf
+                                        @foreach ($upOrder as $id)
+                                            <input type="hidden" name="order[]" value="{{ $id }}">
+                                        @endforeach
+                                        <button type="submit" class="underline">Up</button>
+                                    </form>
+                                @endif
                                 <a href="{{ route('tutor.units.edit', [$course, $module, $unit]) }}" class="underline">Edit</a>
                                 <form method="POST" action="{{ route('tutor.units.publish', [$course, $module, $unit]) }}">
                                     @csrf

@@ -2,7 +2,7 @@
 
 **Owner:** Glenn + Cursor  
 **Priority:** P0  
-**Status:** READY AFTER TASK-009
+**Status:** ACCEPTED
 
 ## Objective
 

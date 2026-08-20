@@ -28,7 +28,7 @@
             <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">No materials yet.</p>
         @else
             <ol class="space-y-3">
-                @foreach ($learningUnit->materials as $material)
+                @foreach ($learningUnit->materials as $index => $material)
                     <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div>
@@ -36,6 +36,19 @@
                                 <p class="text-sm text-slate-500">{{ strtoupper($material->type->value) }} · {{ strtoupper($material->status->value) }}</p>
                             </div>
                             <div class="flex flex-wrap gap-2 text-sm">
+                                @if ($index > 0)
+                                    @php
+                                        $upOrder = $learningUnit->materials->pluck('id')->values()->all();
+                                        [$upOrder[$index - 1], $upOrder[$index]] = [$upOrder[$index], $upOrder[$index - 1]];
+                                    @endphp
+                                    <form method="POST" action="{{ route('tutor.materials.reorder', [$course, $module, $learningUnit]) }}">
+                                        @csrf
+                                        @foreach ($upOrder as $id)
+                                            <input type="hidden" name="order[]" value="{{ $id }}">
+                                        @endforeach
+                                        <button type="submit" class="underline">Up</button>
+                                    </form>
+                                @endif
                                 <form method="POST" action="{{ route('tutor.materials.publish', [$course, $module, $learningUnit, $material]) }}">
                                     @csrf
                                     <button type="submit" class="underline">Publish</button>
@@ -54,13 +67,6 @@
                     </li>
                 @endforeach
             </ol>
-
-            <form method="POST" action="{{ route('tutor.materials.reorder', [$course, $module, $learningUnit]) }}" class="mt-4">
-                @csrf
-                @foreach ($learningUnit->materials as $material)
-                    <input type="hidden" name="order[]" value="{{ $material->id }}">
-                @endforeach
-            </form>
         @endif
     </section>
 @endsection

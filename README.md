@@ -4,8 +4,9 @@ BisaBelajar is the pilot application of the **AI-VET Learning Platform**.
 
 - Application: **BisaBelajar**
 - Platform: **AI-VET Learning Platform**
-- Milestone: **M1 — Core Learning Platform**
+- Milestone: **M1 — Core Learning Platform** (ACCEPTED)
 - Repository: [gmaramis/bisabelajar](https://github.com/gmaramis/bisabelajar)
+- Release: `v0.1.0-m1-core`
 
 Use **AI-VET** for the generic platform architecture. Use **BisaBelajar** for this concrete pilot.
 
