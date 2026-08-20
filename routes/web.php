@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CourseCatalogController;
+use App\Http\Controllers\LearningMaterialAccessController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\LearningController;
 use App\Http\Controllers\Tutor\CourseController;
+use App\Http\Controllers\Tutor\LearningMaterialController;
 use App\Http\Controllers\Tutor\LearningUnitController;
 use App\Http\Controllers\Tutor\ModuleController;
 use App\Http\Controllers\Tutor\OwnedContentController;
@@ -28,6 +30,11 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('users/{user}', [ProfileController::class, 'showUser'])->name('users.show');
+
+    Route::get('courses/{course:slug}/units/{learningUnit}/materials/{material}', [LearningMaterialAccessController::class, 'show'])
+        ->name('materials.show');
+    Route::get('courses/{course:slug}/units/{learningUnit}/materials/{material}/file', [LearningMaterialAccessController::class, 'download'])
+        ->name('materials.download');
 
     Route::middleware('role:student')->group(function (): void {
         Route::get('my-learning', [LearningController::class, 'index'])->name('student.learning');
@@ -63,5 +70,12 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('courses/{course}/modules/{module}/units/{learningUnit}', [LearningUnitController::class, 'destroy'])->name('units.destroy');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/publish', [LearningUnitController::class, 'publish'])->name('units.publish');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/unpublish', [LearningUnitController::class, 'unpublish'])->name('units.unpublish');
+
+        Route::get('courses/{course}/modules/{module}/units/{learningUnit}/materials/create', [LearningMaterialController::class, 'create'])->name('materials.create');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/materials', [LearningMaterialController::class, 'store'])->name('materials.store');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/materials/reorder', [LearningMaterialController::class, 'reorder'])->name('materials.reorder');
+        Route::delete('courses/{course}/modules/{module}/units/{learningUnit}/materials/{material}', [LearningMaterialController::class, 'destroy'])->name('materials.destroy');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/materials/{material}/publish', [LearningMaterialController::class, 'publish'])->name('materials.publish');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/materials/{material}/unpublish', [LearningMaterialController::class, 'unpublish'])->name('materials.unpublish');
     });
 });

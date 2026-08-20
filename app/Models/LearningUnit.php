@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /**
  * Atomic learning container inside a Module.
  *
- * Later milestones may associate materials, activities, evidence,
- * mastery rules, objectives, and prerequisites. Those engines are out of M1 TASK-005.
+ * Materials attach in TASK-006. Later milestones may associate activities,
+ * evidence, mastery rules, objectives, and prerequisites.
  */
 #[Fillable(['module_id', 'title', 'slug', 'description', 'sort_order', 'status'])]
 class LearningUnit extends Model
@@ -38,6 +39,11 @@ class LearningUnit extends Model
     public function module(): BelongsTo
     {
         return $this->belongsTo(Module::class);
+    }
+
+    public function materials(): HasMany
+    {
+        return $this->hasMany(LearningMaterial::class)->orderBy('sort_order');
     }
 
     public function isPublished(): bool
