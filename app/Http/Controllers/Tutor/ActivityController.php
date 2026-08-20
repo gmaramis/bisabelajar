@@ -11,6 +11,7 @@ use App\Models\Activity;
 use App\Models\Course;
 use App\Models\LearningUnit;
 use App\Models\Module;
+use App\Support\ActivityConfiguration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -37,12 +38,17 @@ class ActivityController extends Controller
     ): RedirectResponse {
         $this->ensureNesting($course, $module, $learningUnit);
 
+        $type = ActivityType::from($request->validated('type'));
+
         $learningUnit->activities()->create([
             'title' => $request->validated('title'),
-            'type' => ActivityType::from($request->validated('type')),
+            'type' => $type,
             'status' => ActivityStatus::Draft,
             'sort_order' => (int) $learningUnit->activities()->max('sort_order') + 1,
-            'configuration' => [],
+            'configuration' => ActivityConfiguration::normalize(
+                $type,
+                $request->validated('configuration'),
+            ),
         ]);
 
         return redirect()

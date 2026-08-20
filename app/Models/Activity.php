@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ActivityStatus;
 use App\Enums\ActivityType;
+use App\Support\ActivityConfiguration;
 use Database\Factories\ActivityFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Generic learning activity attached to a Learning Unit.
  *
  * Type-specific engines, submissions, NEXUS, and mastery are out of scope.
- * Configuration is an extensible JSON boundary; type-aware validation is later.
+ * Configuration is type-aware JSON with student-safe and tutor-private fields.
  */
 #[Fillable([
     'learning_unit_id',
@@ -73,5 +74,28 @@ class Activity extends Model
     {
         return $this->learningUnit->isPublished()
             && $this->learningUnit->canBePublished();
+    }
+
+    /**
+     * Student-facing configuration only. Tutor-private keys are never included.
+     *
+     * @return array<string, mixed>
+     */
+    public function studentSafeConfiguration(): array
+    {
+        return ActivityConfiguration::studentSafe($this->type, $this->configuration);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function tutorPrivateConfiguration(): array
+    {
+        $configuration = $this->configuration ?? [];
+
+        return array_filter([
+            'tutor' => $configuration['tutor'] ?? [],
+            'extensions' => $configuration['extensions'] ?? [],
+        ]);
     }
 }

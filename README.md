@@ -36,7 +36,7 @@ Learning units belong to a module, have unique slugs per module, and are not mod
 
 Materials (RICH_TEXT, PDF, POWERPOINT, EXTERNAL_URL) attach to learning units. Files are stored privately with generated names. Viewing material does not record mastery.
 
-Generic activities attach to learning units with types LESSON, QUIZ, ASSIGNMENT, CODING_EXERCISE, DISCUSSION, PROJECT, and EXAM. Status: DRAFT, PUBLISHED, ARCHIVED. Type-specific engines, grading, and code execution are not part of this foundation.
+Generic activities attach to learning units with types LESSON, QUIZ, ASSIGNMENT, CODING_EXERCISE, DISCUSSION, PROJECT, and EXAM. Status: DRAFT, PUBLISHED, ARCHIVED. Type-aware configuration is stored as JSON: student-safe fields (instructions and type metadata) are separate from tutor-private notes, answer keys, rubrics, and expected output. Quiz scoring, assignment grading, and code execution are not enabled.
 
 Students enroll in accessible published courses. Enrollment is unique per student/course, with status ACTIVE, COMPLETED, or DROPPED. Payment and credits are out of scope.
 

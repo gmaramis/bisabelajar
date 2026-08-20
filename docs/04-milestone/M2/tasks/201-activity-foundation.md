@@ -1,6 +1,6 @@
 # TASK-201 — Activity Foundation
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Create the generic Activity domain model attached to a Learning Unit.

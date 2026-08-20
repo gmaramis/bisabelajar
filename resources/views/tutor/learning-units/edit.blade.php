@@ -87,6 +87,12 @@
                             <div>
                                 <h3 class="font-medium">{{ $activity->title }}</h3>
                                 <p class="text-sm text-slate-500">{{ strtoupper($activity->type->value) }} · {{ strtoupper($activity->status->value) }}</p>
+                                @if (isset($activity->configuration['instructions']))
+                                    <p class="mt-1 text-sm text-slate-600">{{ $activity->configuration['instructions'] }}</p>
+                                @endif
+                                @if ($activity->tutorPrivateConfiguration() !== [])
+                                    <p class="mt-1 text-xs text-slate-500">Includes tutor-private configuration</p>
+                                @endif
                             </div>
                             <div class="flex flex-wrap gap-2 text-sm">
                                 @if ($index > 0)

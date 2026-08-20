@@ -24,7 +24,9 @@ class ActivityFactory extends Factory
             'type' => ActivityType::Lesson,
             'status' => ActivityStatus::Draft,
             'sort_order' => 0,
-            'configuration' => [],
+            'configuration' => [
+                'instructions' => 'Complete this activity.',
+            ],
         ];
     }
 

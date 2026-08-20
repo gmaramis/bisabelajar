@@ -40,13 +40,14 @@ class ActivityFoundationTest extends TestCase
             $this->actingAs($tutor)->post(route('tutor.activities.store', [$course, $module, $unit]), [
                 'title' => 'Activity '.$type->value,
                 'type' => $type->value,
+                'configuration' => $this->validConfiguration($type),
             ])->assertRedirect(route('tutor.units.edit', [$course, $module, $unit]));
 
             $activity = $unit->activities()->where('sort_order', $index + 1)->first();
             $this->assertNotNull($activity);
             $this->assertSame($type, $activity->type);
             $this->assertSame(ActivityStatus::Draft, $activity->status);
-            $this->assertSame([], $activity->configuration);
+            $this->assertSame('Complete this activity.', $activity->configuration['instructions']);
         }
 
         $this->assertSame(7, $unit->activities()->count());
@@ -182,5 +183,21 @@ class ActivityFoundationTest extends TestCase
         $unit = LearningUnit::factory()->for($module)->create();
 
         return [$tutor, $course, $module, $unit];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function validConfiguration(ActivityType $type): array
+    {
+        $configuration = [
+            'instructions' => 'Complete this activity.',
+        ];
+
+        if ($type === ActivityType::Discussion) {
+            $configuration['prompt'] = 'What did you learn?';
+        }
+
+        return $configuration;
     }
 }
