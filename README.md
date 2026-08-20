@@ -4,9 +4,9 @@ BisaBelajar is the pilot application of the **AI-VET Learning Platform**.
 
 - Application: **BisaBelajar**
 - Platform: **AI-VET Learning Platform**
-- Milestone: **M1 — Core Learning Platform** (ACCEPTED)
+- Milestone: **M2 — Activity Engine** (ACCEPTED)
 - Repository: [gmaramis/bisabelajar](https://github.com/gmaramis/bisabelajar)
-- Release: `v0.1.0-m1-core`
+- Release: `v0.2.0-m2-activities`
 
 Use **AI-VET** for the generic platform architecture. Use **BisaBelajar** for this concrete pilot.
 
@@ -63,7 +63,7 @@ php artisan test
 
 PHPUnit uses in-memory SQLite. That does not change the MySQL application baseline.
 
-## M1 Documentation
+## Documentation
 
 Start here:
 
@@ -71,5 +71,6 @@ Start here:
 - [`docs/CURSOR-START-HERE.md`](docs/CURSOR-START-HERE.md)
 - [`docs/TECHNICAL-BASELINE.md`](docs/TECHNICAL-BASELINE.md)
 - [`docs/03-milestones/M1/M1-OVERVIEW.md`](docs/03-milestones/M1/M1-OVERVIEW.md)
+- [`docs/04-milestone/M2/M2-OVERVIEW.md`](docs/04-milestone/M2/M2-OVERVIEW.md)
 
-NEXUS, mastery, competency, code execution, and related engines are outside M1.
+NEXUS, mastery, competency, code execution, and related engines remain outside M2.

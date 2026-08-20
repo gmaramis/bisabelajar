@@ -1,6 +1,6 @@
 # TASK-207 — Tutor Activity Management
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Provide the complete custom Tutor UI for managing activities inside Learning Units.
