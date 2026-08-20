@@ -27,7 +27,7 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticatedAs($student);
         $this->assertTrue($student->fresh()->isStudent());
-        $response->assertRedirect(route('profile.show'));
+        $response->assertRedirect(route('student.dashboard'));
     }
 
     public function test_tutor_can_authenticate(): void
@@ -42,7 +42,7 @@ class AuthenticationTest extends TestCase
         $this->assertAuthenticatedAs($tutor);
         $this->assertTrue($tutor->fresh()->isTutor());
         $this->assertSame(Role::Tutor, $tutor->fresh()->role);
-        $response->assertRedirect(route('profile.show'));
+        $response->assertRedirect(route('tutor.workspace'));
     }
 
     public function test_users_cannot_authenticate_with_invalid_password(): void
@@ -72,7 +72,8 @@ class AuthenticationTest extends TestCase
         $tutor = User::factory()->tutor()->create();
 
         $this->get(route('profile.show'))->assertRedirect(route('login'));
-        $this->get(route('student.learning'))->assertRedirect(route('login'));
+        $this->get(route('student.dashboard'))->assertRedirect(route('login'));
+        $this->get(route('student.courses'))->assertRedirect(route('login'));
         $this->get(route('tutor.workspace'))->assertRedirect(route('login'));
         $this->patch(route('tutor.owned-content.update', $tutor))->assertRedirect(route('login'));
     }

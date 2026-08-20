@@ -37,6 +37,8 @@ Materials (RICH_TEXT, PDF, POWERPOINT, EXTERNAL_URL) attach to learning units. F
 
 Students enroll in accessible published courses. Enrollment is unique per student/course, with status ACTIVE, COMPLETED, or DROPPED. Payment and credits are out of scope.
 
+Students follow Login → Dashboard → My Courses → Course → Module → Learning Unit → Material. Only active enrollments and published content are shown. Tutor editing remains inaccessible to students.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).

@@ -15,13 +15,8 @@ class LearningMaterialPolicy
         }
 
         $unit = $material->learningUnit;
-        $module = $unit->module;
-        $course = $module->course;
 
-        return $material->isPublished()
-            && $unit->isPublished()
-            && $module->isPublished()
-            && $course->isPubliclyViewable();
+        return $material->isPublished() && $user->can('learn', $unit);
     }
 
     public function create(User $user, LearningUnit $learningUnit): bool

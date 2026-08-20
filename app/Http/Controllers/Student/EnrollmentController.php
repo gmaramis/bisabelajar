@@ -28,7 +28,7 @@ class EnrollmentController extends Controller
         }
 
         return redirect()
-            ->route('student.learning')
+            ->route('student.courses')
             ->with('status', 'Enrolled in course.');
     }
 }

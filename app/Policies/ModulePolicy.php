@@ -42,4 +42,9 @@ class ModulePolicy
     {
         return $this->update($user, $module);
     }
+
+    public function learn(User $user, Module $module): bool
+    {
+        return $module->isPublished() && $user->can('learn', $module->course);
+    }
 }

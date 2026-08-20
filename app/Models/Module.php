@@ -6,6 +6,7 @@ use App\Enums\CourseStatus;
 use App\Enums\ModuleStatus;
 use Database\Factories\ModuleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,15 @@ class Module extends Model
     public function learningUnits(): HasMany
     {
         return $this->hasMany(LearningUnit::class)->orderBy('sort_order');
+    }
+
+    /**
+     * @param  Builder<Module>  $query
+     * @return Builder<Module>
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('status', ModuleStatus::Published);
     }
 
     public function isPublished(): bool

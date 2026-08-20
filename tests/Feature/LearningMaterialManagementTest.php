@@ -7,6 +7,7 @@ use App\Enums\MaterialStatus;
 use App\Enums\MaterialType;
 use App\Enums\ModuleStatus;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\LearningMaterial;
 use App\Models\LearningUnit;
 use App\Models\Module;
@@ -118,6 +119,7 @@ class LearningMaterialManagementTest extends TestCase
     {
         [$tutor, $course, $module, $unit, $material] = $this->publishedPublicStack();
         $student = User::factory()->student()->create();
+        Enrollment::factory()->for($student, 'user')->for($course)->create();
 
         $this->actingAs($student)
             ->get(route('materials.show', [$course, $unit, $material]))
@@ -130,6 +132,7 @@ class LearningMaterialManagementTest extends TestCase
         [$tutor, $course, $module, $unit, $material] = $this->publishedPublicStack();
         $material->update(['status' => MaterialStatus::Draft]);
         $student = User::factory()->student()->create();
+        Enrollment::factory()->for($student, 'user')->for($course)->create();
 
         $this->actingAs($student)
             ->get(route('materials.show', [$course, $unit, $material]))
@@ -211,6 +214,7 @@ class LearningMaterialManagementTest extends TestCase
     {
         [$tutor, $course, $module, $unit, $material] = $this->publishedPublicStack();
         $student = User::factory()->student()->create();
+        Enrollment::factory()->for($student, 'user')->for($course)->create();
 
         $this->actingAs($student)
             ->get(route('materials.show', [$course, $unit, $material]))

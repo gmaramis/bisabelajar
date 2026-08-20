@@ -25,7 +25,7 @@ class EnrollmentTest extends TestCase
             ->post(route('enrollments.store', $course), [
                 'user_id' => User::factory()->student()->create()->id,
             ])
-            ->assertRedirect(route('student.learning'));
+            ->assertRedirect(route('student.courses'));
 
         $enrollment = Enrollment::query()->first();
 
@@ -63,7 +63,7 @@ class EnrollmentTest extends TestCase
         Enrollment::factory()->for($otherStudent, 'user')->for($otherCourse)->create();
 
         $this->actingAs($student)
-            ->get(route('student.learning'))
+            ->get(route('student.courses'))
             ->assertOk()
             ->assertSee('Owned enrollment course')
             ->assertDontSee('Hidden other enrollment');

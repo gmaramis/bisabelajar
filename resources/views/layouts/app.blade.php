@@ -11,13 +11,14 @@
     </head>
     <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
         <header class="border-b border-slate-200 bg-white">
-            <div class="mx-auto flex max-w-4xl items-center justify-between gap-4 px-4 py-4">
+            <div class="mx-auto flex max-w-4xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <a href="{{ url('/') }}" class="font-semibold">{{ config('app.name') }}</a>
-                <nav class="flex items-center gap-3 text-sm">
+                <nav class="flex flex-wrap items-center gap-3 text-sm">
                     @auth
                         <a href="{{ route('profile.show') }}" class="hover:underline">Profile</a>
                         @if (auth()->user()->isStudent())
-                            <a href="{{ route('student.learning') }}" class="hover:underline">My learning</a>
+                            <a href="{{ route('student.dashboard') }}" class="hover:underline">Dashboard</a>
+                            <a href="{{ route('student.courses') }}" class="hover:underline">My Courses</a>
                         @endif
                         @if (auth()->user()->isTutor())
                             <a href="{{ route('tutor.workspace') }}" class="hover:underline">Tutor workspace</a>

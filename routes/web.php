@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CourseCatalogController;
 use App\Http\Controllers\LearningMaterialAccessController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student\CourseExperienceController;
+use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\EnrollmentController;
 use App\Http\Controllers\Student\LearningController;
 use App\Http\Controllers\Tutor\CourseController;
@@ -38,7 +40,11 @@ Route::middleware('auth')->group(function (): void {
         ->name('materials.download');
 
     Route::middleware('role:student')->group(function (): void {
-        Route::get('my-learning', [LearningController::class, 'index'])->name('student.learning');
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
+        Route::get('my-courses', [LearningController::class, 'index'])->name('student.courses');
+        Route::get('my-courses/{course:slug}', [CourseExperienceController::class, 'showCourse'])->name('student.courses.show');
+        Route::get('my-courses/{course:slug}/modules/{module}', [CourseExperienceController::class, 'showModule'])->name('student.modules.show');
+        Route::get('my-courses/{course:slug}/modules/{module}/units/{learningUnit}', [CourseExperienceController::class, 'showUnit'])->name('student.units.show');
         Route::post('courses/{course:slug}/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
     });
 

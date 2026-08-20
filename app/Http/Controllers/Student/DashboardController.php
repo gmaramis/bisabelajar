@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class LearningController extends Controller
+class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
@@ -18,7 +18,7 @@ class LearningController extends Controller
             ->latest('enrolled_at')
             ->get();
 
-        return view('student.courses.index', [
+        return view('student.dashboard', [
             'user' => $request->user(),
             'enrollments' => $enrollments,
         ]);

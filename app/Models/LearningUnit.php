@@ -46,6 +46,15 @@ class LearningUnit extends Model
         return $this->hasMany(LearningMaterial::class)->orderBy('sort_order');
     }
 
+    /**
+     * @param  Builder<LearningUnit>  $query
+     * @return Builder<LearningUnit>
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('status', LearningUnitStatus::Published);
+    }
+
     public function isPublished(): bool
     {
         return $this->status === LearningUnitStatus::Published;

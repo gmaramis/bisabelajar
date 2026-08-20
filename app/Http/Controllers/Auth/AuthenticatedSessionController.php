@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        return redirect()->intended(route('profile.show'));
+        return redirect()->intended(route($request->user()->homeRouteName()));
     }
 
     public function destroy(Request $request): RedirectResponse

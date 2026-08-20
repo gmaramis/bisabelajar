@@ -42,4 +42,9 @@ class LearningUnitPolicy
     {
         return $this->update($user, $learningUnit);
     }
+
+    public function learn(User $user, LearningUnit $learningUnit): bool
+    {
+        return $learningUnit->isPublished() && $user->can('learn', $learningUnit->module);
+    }
 }

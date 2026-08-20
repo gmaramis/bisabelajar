@@ -21,6 +21,11 @@ class CoursePolicy
         return $course->isPubliclyViewable();
     }
 
+    public function learn(User $user, Course $course): bool
+    {
+        return $course->isLearnableBy($user);
+    }
+
     public function create(User $user): bool
     {
         return $user->isTutor();

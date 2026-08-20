@@ -18,7 +18,19 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->redirectGuestsTo(fn (): string => route('login'));
-        $middleware->redirectUsersTo(fn (): string => route('profile.show'));
+        $middleware->redirectUsersTo(function (Request $request): string {
+            $user = $request->user();
+
+            if ($user?->isStudent()) {
+                return route('student.dashboard');
+            }
+
+            if ($user?->isTutor()) {
+                return route('tutor.workspace');
+            }
+
+            return route('profile.show');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

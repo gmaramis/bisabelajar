@@ -6,6 +6,7 @@ use App\Enums\MaterialStatus;
 use App\Enums\MaterialType;
 use Database\Factories\LearningMaterialFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,6 +56,15 @@ class LearningMaterial extends Model
     public function isPublished(): bool
     {
         return $this->status === MaterialStatus::Published;
+    }
+
+    /**
+     * @param  Builder<LearningMaterial>  $query
+     * @return Builder<LearningMaterial>
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('status', MaterialStatus::Published);
     }
 
     public function isFile(): bool

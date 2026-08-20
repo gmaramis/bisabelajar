@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CourseStatus;
 use App\Enums\CourseVisibility;
+use App\Enums\EnrollmentStatus;
 use Database\Factories\CourseFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,6 +49,23 @@ class Course extends Model
     public function isOwnedBy(User $user): bool
     {
         return $this->owner_id === $user->id;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->status === CourseStatus::Published;
+    }
+
+    public function isLearnableBy(?User $user): bool
+    {
+        if ($user === null || ! $user->isStudent() || ! $this->isPublished()) {
+            return false;
+        }
+
+        return $this->enrollments()
+            ->where('user_id', $user->id)
+            ->where('status', EnrollmentStatus::Active)
+            ->exists();
     }
 
     public function isEnrollable(): bool

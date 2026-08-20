@@ -25,8 +25,11 @@ class LearningMaterialAccessController extends Controller
         $this->ensurePublishedAccess($course, $learningUnit, $material);
         $this->authorize('view', $material);
 
+        $learningUnit->loadMissing('module');
+
         return view('materials.show', [
             'course' => $course,
+            'module' => $learningUnit->module,
             'learningUnit' => $learningUnit,
             'material' => $material,
         ]);

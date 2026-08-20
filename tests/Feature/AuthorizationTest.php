@@ -76,9 +76,14 @@ class AuthorizationTest extends TestCase
             ->assertOk();
 
         $this->actingAs($student)
-            ->get(route('student.learning'))
+            ->get(route('student.dashboard'))
             ->assertOk()
-            ->assertSee('My learning');
+            ->assertSee('Dashboard');
+
+        $this->actingAs($student)
+            ->get(route('student.courses'))
+            ->assertOk()
+            ->assertSee('My Courses');
     }
 
     public function test_tutor_cannot_access_student_learning_area(): void
@@ -86,7 +91,11 @@ class AuthorizationTest extends TestCase
         $tutor = User::factory()->tutor()->create();
 
         $this->actingAs($tutor)
-            ->get(route('student.learning'))
+            ->get(route('student.dashboard'))
+            ->assertForbidden();
+
+        $this->actingAs($tutor)
+            ->get(route('student.courses'))
             ->assertForbidden();
     }
 }
