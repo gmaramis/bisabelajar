@@ -19,6 +19,12 @@ Use **AI-VET** for the generic platform architecture. Use **BisaBelajar** for th
 
 SQLite may be used only for isolated automated tests. Application development and runtime use MySQL/MariaDB.
 
+## Authentication
+
+Session authentication is built with Laravel's native Auth (no Breeze, Fortify, Jetstream, or Filament).
+
+Roles: **STUDENT** and **TUTOR**. Authorization is enforced server-side via `auth` middleware, `role` middleware, and ownership gates. Tutors may only mutate their own future course content.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).

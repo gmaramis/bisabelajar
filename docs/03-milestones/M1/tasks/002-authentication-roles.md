@@ -2,7 +2,7 @@
 
 **Owner:** Cursor  
 **Priority:** P0  
-**Status:** READY AFTER TASK-001
+**Status:** REVIEW
 
 ## Objective
 

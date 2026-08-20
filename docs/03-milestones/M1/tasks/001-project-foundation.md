@@ -2,7 +2,7 @@
 
 **Owner:** Cursor  
 **Priority:** P0  
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 
