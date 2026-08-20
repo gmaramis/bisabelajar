@@ -29,4 +29,52 @@
             <button type="submit" class="rounded-md border border-slate-300 px-4 py-2 text-sm">Archive</button>
         </form>
     </div>
+
+    <section class="mt-10">
+        <div class="mb-4 flex items-center justify-between gap-4">
+            <h2 class="text-lg font-semibold">Modules</h2>
+            <a href="{{ route('tutor.modules.create', $course) }}" class="rounded-md border border-slate-300 px-4 py-2 text-sm">Add module</a>
+        </div>
+        <p class="mb-4 text-sm text-slate-600">Add as many modules as needed. Order is saved. Modules are not meetings.</p>
+
+        @if ($course->modules->isEmpty())
+            <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">No modules yet.</p>
+        @else
+            <ol class="space-y-3">
+                @foreach ($course->modules as $module)
+                    <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h3 class="font-medium">{{ $module->title }}</h3>
+                                <p class="text-sm text-slate-500">{{ strtoupper($module->status->value) }}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2 text-sm">
+                                <a href="{{ route('tutor.modules.edit', [$course, $module]) }}" class="underline">Edit</a>
+                                <form method="POST" action="{{ route('tutor.modules.publish', [$course, $module]) }}">
+                                    @csrf
+                                    <button type="submit" class="underline">Publish</button>
+                                </form>
+                                <form method="POST" action="{{ route('tutor.modules.unpublish', [$course, $module]) }}">
+                                    @csrf
+                                    <button type="submit" class="underline">Unpublish</button>
+                                </form>
+                                <form method="POST" action="{{ route('tutor.modules.destroy', [$course, $module]) }}" onsubmit="return confirm('Delete this module?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="underline">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                @endforeach
+            </ol>
+
+            <form method="POST" action="{{ route('tutor.modules.reorder', $course) }}" class="mt-4">
+                @csrf
+                @foreach ($course->modules as $module)
+                    <input type="hidden" name="order[]" value="{{ $module->id }}">
+                @endforeach
+            </form>
+        @endif
+    </section>
 @endsection

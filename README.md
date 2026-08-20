@@ -29,6 +29,8 @@ Roles: **STUDENT** and **TUTOR**. Authorization is enforced server-side via `aut
 
 Tutors create, edit, publish, and archive their own courses. Status: DRAFT, PUBLISHED, ARCHIVED. Visibility: PRIVATE, UNLISTED, PUBLIC. Courses have no semester or fixed meeting count.
 
+Tutors add an arbitrary number of ordered modules to owned courses. Module publish requires the course to be published.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).

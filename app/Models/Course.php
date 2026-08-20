@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 #[Fillable(['owner_id', 'title', 'slug', 'description', 'thumbnail', 'status', 'visibility'])]
@@ -32,6 +33,11 @@ class Course extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function modules(): HasMany
+    {
+        return $this->hasMany(Module::class)->orderBy('sort_order');
     }
 
     public function isOwnedBy(User $user): bool
