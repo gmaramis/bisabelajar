@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseCatalogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\LearningController;
 use App\Http\Controllers\Tutor\CourseController;
+use App\Http\Controllers\Tutor\LearningUnitController;
 use App\Http\Controllers\Tutor\ModuleController;
 use App\Http\Controllers\Tutor\OwnedContentController;
 use App\Http\Controllers\Tutor\WorkspaceController;
@@ -53,5 +54,14 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('courses/{course}/modules/{module}', [ModuleController::class, 'destroy'])->name('modules.destroy');
         Route::post('courses/{course}/modules/{module}/publish', [ModuleController::class, 'publish'])->name('modules.publish');
         Route::post('courses/{course}/modules/{module}/unpublish', [ModuleController::class, 'unpublish'])->name('modules.unpublish');
+
+        Route::get('courses/{course}/modules/{module}/units/create', [LearningUnitController::class, 'create'])->name('units.create');
+        Route::post('courses/{course}/modules/{module}/units', [LearningUnitController::class, 'store'])->name('units.store');
+        Route::post('courses/{course}/modules/{module}/units/reorder', [LearningUnitController::class, 'reorder'])->name('units.reorder');
+        Route::get('courses/{course}/modules/{module}/units/{learningUnit}/edit', [LearningUnitController::class, 'edit'])->name('units.edit');
+        Route::put('courses/{course}/modules/{module}/units/{learningUnit}', [LearningUnitController::class, 'update'])->name('units.update');
+        Route::delete('courses/{course}/modules/{module}/units/{learningUnit}', [LearningUnitController::class, 'destroy'])->name('units.destroy');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/publish', [LearningUnitController::class, 'publish'])->name('units.publish');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/unpublish', [LearningUnitController::class, 'unpublish'])->name('units.unpublish');
     });
 });

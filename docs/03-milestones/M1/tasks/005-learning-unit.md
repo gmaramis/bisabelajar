@@ -2,7 +2,7 @@
 
 **Owner:** Cursor or Hermes  
 **Priority:** P1  
-**Status:** READY AFTER TASK-004
+**Status:** REVIEW
 
 ## Objective
 

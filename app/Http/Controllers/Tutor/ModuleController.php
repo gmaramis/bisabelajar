@@ -45,7 +45,7 @@ class ModuleController extends Controller
 
         return view('tutor.modules.edit', [
             'course' => $course,
-            'module' => $module,
+            'module' => $module->load('learningUnits'),
         ]);
     }
 

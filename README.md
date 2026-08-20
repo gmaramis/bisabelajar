@@ -31,6 +31,8 @@ Tutors create, edit, publish, and archive their own courses. Status: DRAFT, PUBL
 
 Tutors add an arbitrary number of ordered modules to owned courses. Module publish requires the course to be published.
 
+Learning units belong to a module, have unique slugs per module, and are not modeled as meetings.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).
