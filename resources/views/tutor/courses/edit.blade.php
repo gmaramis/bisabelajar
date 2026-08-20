@@ -77,4 +77,22 @@
             </form>
         @endif
     </section>
+
+    <section class="mt-10">
+        <h2 class="mb-4 text-lg font-semibold">Enrollments</h2>
+        <p class="mb-4 text-sm text-slate-600">Students enrolled in this course. Enrollment is unique per student.</p>
+
+        @if ($course->enrollments->isEmpty())
+            <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">No enrollments yet.</p>
+        @else
+            <ul class="space-y-3">
+                @foreach ($course->enrollments as $enrollment)
+                    <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                        <h3 class="font-medium">{{ $enrollment->user->name }}</h3>
+                        <p class="text-sm text-slate-500">{{ $enrollment->user->email }} · {{ strtoupper($enrollment->status->value) }}</p>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+    </section>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -29,8 +30,13 @@ class CourseCatalogController extends Controller
             403,
         );
 
+        $isEnrolled = $course->isEnrolledBy($user);
+        $canEnroll = $user?->can('create', [Enrollment::class, $course]) && ! $isEnrolled;
+
         return view('courses.show', [
             'course' => $course,
+            'isEnrolled' => $isEnrolled,
+            'canEnroll' => $canEnroll,
         ]);
     }
 }

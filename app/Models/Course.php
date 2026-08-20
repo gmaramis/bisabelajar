@@ -40,9 +40,28 @@ class Course extends Model
         return $this->hasMany(Module::class)->orderBy('sort_order');
     }
 
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class)->latest('enrolled_at');
+    }
+
     public function isOwnedBy(User $user): bool
     {
         return $this->owner_id === $user->id;
+    }
+
+    public function isEnrollable(): bool
+    {
+        return $this->isPubliclyViewable();
+    }
+
+    public function isEnrolledBy(?User $user): bool
+    {
+        if ($user === null) {
+            return false;
+        }
+
+        return $this->enrollments()->where('user_id', $user->id)->exists();
     }
 
     public function isDiscoverable(): bool

@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\LearningMaterial;
 use App\Models\LearningUnit;
 use App\Models\Module;
 use App\Models\User;
 use App\Policies\CoursePolicy;
+use App\Policies\EnrollmentPolicy;
 use App\Policies\LearningMaterialPolicy;
 use App\Policies\LearningUnitPolicy;
 use App\Policies\ModulePolicy;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Module::class, ModulePolicy::class);
         Gate::policy(LearningUnit::class, LearningUnitPolicy::class);
         Gate::policy(LearningMaterial::class, LearningMaterialPolicy::class);
+        Gate::policy(Enrollment::class, EnrollmentPolicy::class);
 
         Gate::define('updateOwnedContent', function (User $user, User $owner): bool {
             return $user->isTutor() && $user->is($owner);

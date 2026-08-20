@@ -35,6 +35,8 @@ Learning units belong to a module, have unique slugs per module, and are not mod
 
 Materials (RICH_TEXT, PDF, POWERPOINT, EXTERNAL_URL) attach to learning units. Files are stored privately with generated names. Viewing material does not record mastery.
 
+Students enroll in accessible published courses. Enrollment is unique per student/course, with status ACTIVE, COMPLETED, or DROPPED. Payment and credits are out of scope.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).
