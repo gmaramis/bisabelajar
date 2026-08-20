@@ -39,6 +39,8 @@ Students enroll in accessible published courses. Enrollment is unique per studen
 
 Students follow Login → Dashboard → My Courses → Course → Module → Learning Unit → Material. Only active enrollments and published content are shown. Tutor editing remains inaccessible to students.
 
+Basic unit progress (NOT_STARTED, IN_PROGRESS, COMPLETED) is stored per student enrollment. Completed is not mastered.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).

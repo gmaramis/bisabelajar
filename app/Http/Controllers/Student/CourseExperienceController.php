@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Enums\EnrollmentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Enrollment;
+use App\Models\LearningProgress;
 use App\Models\LearningUnit;
 use App\Models\Module;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CourseExperienceController extends Controller
@@ -23,7 +27,7 @@ class CourseExperienceController extends Controller
         ]);
     }
 
-    public function showModule(Course $course, Module $module): View
+    public function showModule(Request $request, Course $course, Module $module): View
     {
         $this->ensureModuleBelongsToCourse($course, $module);
         $this->authorize('learn', $module);
@@ -32,13 +36,20 @@ class CourseExperienceController extends Controller
             'learningUnits' => fn ($query) => $query->published()->orderBy('sort_order'),
         ]);
 
+        $progressByUnitId = LearningProgress::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('learning_unit_id', $module->learningUnits->pluck('id'))
+            ->get()
+            ->keyBy('learning_unit_id');
+
         return view('student.modules.show', [
             'course' => $course,
             'module' => $module,
+            'progressByUnitId' => $progressByUnitId,
         ]);
     }
 
-    public function showUnit(Course $course, Module $module, LearningUnit $learningUnit): View
+    public function showUnit(Request $request, Course $course, Module $module, LearningUnit $learningUnit): View
     {
         $this->ensureUnitBelongsToModule($course, $module, $learningUnit);
         $this->authorize('learn', $learningUnit);
@@ -47,11 +58,30 @@ class CourseExperienceController extends Controller
             'materials' => fn ($query) => $query->published()->orderBy('sort_order'),
         ]);
 
+        $progress = LearningProgress::markInProgress(
+            $this->activeEnrollment($request, $course),
+            $learningUnit,
+        );
+
         return view('student.units.show', [
             'course' => $course,
             'module' => $module,
             'learningUnit' => $learningUnit,
+            'progress' => $progress,
         ]);
+    }
+
+    private function activeEnrollment(Request $request, Course $course): Enrollment
+    {
+        $enrollment = $request->user()
+            ->enrollments()
+            ->where('course_id', $course->id)
+            ->where('status', EnrollmentStatus::Active)
+            ->first();
+
+        abort_unless($enrollment instanceof Enrollment, 403);
+
+        return $enrollment;
     }
 
     private function ensureModuleBelongsToCourse(Course $course, Module $module): void

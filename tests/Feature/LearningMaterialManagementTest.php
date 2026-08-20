@@ -224,6 +224,7 @@ class LearningMaterialManagementTest extends TestCase
             'id' => $material->id,
             'status' => 'mastered',
         ]);
+        $this->assertSame(0, \App\Models\LearningProgress::query()->count());
         $this->assertFalse(\Illuminate\Support\Facades\Schema::hasTable('progress'));
         $this->assertFalse(\Illuminate\Support\Facades\Schema::hasTable('masteries'));
     }

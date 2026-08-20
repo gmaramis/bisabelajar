@@ -85,11 +85,24 @@
         @if ($course->enrollments->isEmpty())
             <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">No enrollments yet.</p>
         @else
+            @php
+                $publishedUnits = $course->modules->flatMap->learningUnits->filter->isPublished();
+            @endphp
             <ul class="space-y-3">
                 @foreach ($course->enrollments as $enrollment)
                     <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                         <h3 class="font-medium">{{ $enrollment->user->name }}</h3>
                         <p class="text-sm text-slate-500">{{ $enrollment->user->email }} · {{ strtoupper($enrollment->status->value) }}</p>
+                        <p class="mt-2 text-sm text-slate-600">Progress is not mastery.</p>
+                        @if ($publishedUnits->isEmpty())
+                            <p class="mt-2 text-sm text-slate-500">No published units.</p>
+                        @else
+                            <ul class="mt-2 space-y-1 text-sm text-slate-600">
+                                @foreach ($publishedUnits as $unit)
+                                    <li>{{ $unit->title }} · {{ strtoupper(\App\Models\LearningProgress::statusFor($enrollment->learningProgress->firstWhere('learning_unit_id', $unit->id))->value) }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </li>
                 @endforeach
             </ul>

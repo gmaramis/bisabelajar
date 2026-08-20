@@ -8,6 +8,7 @@ use App\Http\Controllers\Student\CourseExperienceController;
 use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\EnrollmentController;
 use App\Http\Controllers\Student\LearningController;
+use App\Http\Controllers\Student\LearningProgressController;
 use App\Http\Controllers\Tutor\CourseController;
 use App\Http\Controllers\Tutor\LearningMaterialController;
 use App\Http\Controllers\Tutor\LearningUnitController;
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('my-courses/{course:slug}', [CourseExperienceController::class, 'showCourse'])->name('student.courses.show');
         Route::get('my-courses/{course:slug}/modules/{module}', [CourseExperienceController::class, 'showModule'])->name('student.modules.show');
         Route::get('my-courses/{course:slug}/modules/{module}/units/{learningUnit}', [CourseExperienceController::class, 'showUnit'])->name('student.units.show');
+        Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/complete', [LearningProgressController::class, 'complete'])->name('student.progress.complete');
         Route::post('courses/{course:slug}/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
     });
 

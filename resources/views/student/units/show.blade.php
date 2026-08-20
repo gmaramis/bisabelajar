@@ -10,7 +10,19 @@
     </nav>
 
     <h1 class="mb-2 text-xl font-semibold sm:text-2xl">{{ $learningUnit->title }}</h1>
+    <p class="mb-2 text-sm text-slate-500">{{ strtoupper($progress->status->value) }} · Completion is not mastery.</p>
     <p class="mb-6 whitespace-pre-wrap text-sm text-slate-700">{{ $learningUnit->description }}</p>
+
+    @if (session('status'))
+        <p class="mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">{{ session('status') }}</p>
+    @endif
+
+    @if (! $progress->isCompleted())
+        <form method="POST" action="{{ route('student.progress.complete', [$course, $module, $learningUnit]) }}" class="mb-6">
+            @csrf
+            <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Mark unit complete</button>
+        </form>
+    @endif
 
     <h2 class="mb-3 text-lg font-semibold">Materials</h2>
     @if ($learningUnit->materials->isEmpty())

@@ -20,6 +20,7 @@
             @foreach ($module->learningUnits as $unit)
                 <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                     <a href="{{ route('student.units.show', [$course, $module, $unit]) }}" class="font-medium hover:underline">{{ $unit->title }}</a>
+                    <p class="text-sm text-slate-500">{{ strtoupper(\App\Models\LearningProgress::statusFor($progressByUnitId->get($unit->id))->value) }}</p>
                     @if ($unit->description)
                         <p class="mt-1 text-sm text-slate-600">{{ \Illuminate\Support\Str::limit($unit->description, 120) }}</p>
                     @endif

@@ -2,7 +2,7 @@
 
 **Owner:** Hermes  
 **Priority:** P1  
-**Status:** READY AFTER TASK-008
+**Status:** REVIEW
 
 ## Objective
 

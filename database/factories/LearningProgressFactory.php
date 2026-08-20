@@ -1,0 +1,58 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Enums\ProgressStatus;
+use App\Models\Enrollment;
+use App\Models\LearningProgress;
+use App\Models\LearningUnit;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<LearningProgress>
+ */
+class LearningProgressFactory extends Factory
+{
+    public function configure(): static
+    {
+        return $this->afterMaking(function (LearningProgress $progress): void {
+            if ($progress->user_id !== null) {
+                return;
+            }
+
+            $progress->user_id = $progress->enrollment?->user_id
+                ?? Enrollment::query()->find($progress->enrollment_id)?->user_id;
+        });
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'enrollment_id' => Enrollment::factory(),
+            'learning_unit_id' => LearningUnit::factory(),
+            'status' => ProgressStatus::NotStarted,
+            'started_at' => null,
+            'completed_at' => null,
+        ];
+    }
+
+    public function inProgress(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => ProgressStatus::InProgress,
+            'started_at' => now(),
+        ]);
+    }
+
+    public function completed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => ProgressStatus::Completed,
+            'started_at' => now()->subHour(),
+            'completed_at' => now(),
+        ]);
+    }
+}

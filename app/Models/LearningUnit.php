@@ -46,6 +46,11 @@ class LearningUnit extends Model
         return $this->hasMany(LearningMaterial::class)->orderBy('sort_order');
     }
 
+    public function learningProgress(): HasMany
+    {
+        return $this->hasMany(LearningProgress::class);
+    }
+
     /**
      * @param  Builder<LearningUnit>  $query
      * @return Builder<LearningUnit>

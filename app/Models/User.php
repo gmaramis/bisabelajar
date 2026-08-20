@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasMany(Enrollment::class);
     }
 
+    public function learningProgress(): HasMany
+    {
+        return $this->hasMany(LearningProgress::class);
+    }
+
     public function homeRouteName(): string
     {
         return $this->isStudent() ? 'student.dashboard' : 'tutor.workspace';

@@ -2,7 +2,7 @@
 
 **Owner:** Cursor + Hermes  
 **Priority:** P1  
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 
