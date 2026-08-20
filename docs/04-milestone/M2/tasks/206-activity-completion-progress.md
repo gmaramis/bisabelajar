@@ -1,6 +1,6 @@
 # TASK-206 — Activity Completion & Progress
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Track activity participation/completion separately from Learning Unit mastery.

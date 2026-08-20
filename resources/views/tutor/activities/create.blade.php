@@ -3,6 +3,9 @@
 @section('title', 'Add activity — '.config('app.name'))
 
 @section('content')
+    <p class="mb-4 text-sm">
+        <a href="{{ route('tutor.units.edit', [$course, $module, $learningUnit]) }}" class="underline">Back to activities</a>
+    </p>
     <h1 class="mb-1 text-xl font-semibold">Add activity</h1>
     <p class="mb-4 text-sm text-slate-600">{{ $course->title }} · {{ $module->title }} · {{ $learningUnit->title }}</p>
 
