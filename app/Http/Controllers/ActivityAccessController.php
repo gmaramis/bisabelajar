@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\ActivityProgress;
+use App\Models\ActivitySubmission;
 use App\Models\Course;
 use App\Models\LearningUnit;
 use Illuminate\Http\Request;
@@ -19,11 +20,17 @@ class ActivityAccessController extends Controller
         $learningUnit->loadMissing('module');
 
         $activityProgress = null;
+        $submissions = collect();
         if ($request->user()?->isStudent()) {
             $activityProgress = ActivityProgress::query()
                 ->where('user_id', $request->user()->id)
                 ->where('activity_id', $activity->id)
                 ->first();
+            $submissions = ActivitySubmission::query()
+                ->where('user_id', $request->user()->id)
+                ->where('activity_id', $activity->id)
+                ->orderBy('attempt_number')
+                ->get();
         }
 
         return view('activities.show', [
@@ -33,6 +40,7 @@ class ActivityAccessController extends Controller
             'activity' => $activity,
             'configuration' => $activity->studentSafeConfiguration(),
             'activityProgress' => $activityProgress,
+            'submissions' => $submissions,
         ]);
     }
 

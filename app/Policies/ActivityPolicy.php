@@ -24,6 +24,11 @@ class ActivityPolicy
             && $user->can('learn', $activity->learningUnit);
     }
 
+    public function submit(User $user, Activity $activity): bool
+    {
+        return $this->start($user, $activity);
+    }
+
     public function create(User $user, LearningUnit $learningUnit): bool
     {
         return $user->can('update', $learningUnit);

@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Generic learning activity attached to a Learning Unit.
  *
- * Type-specific engines, submissions, NEXUS, and mastery are out of scope.
+ * Type-specific engines, NEXUS, and mastery are out of scope.
+ * Submissions store a generic payload without grading or code execution.
  * Configuration is type-aware JSON with student-safe and tutor-private fields.
  */
 #[Fillable([
@@ -60,6 +61,11 @@ class Activity extends Model
     public function activityProgress(): HasMany
     {
         return $this->hasMany(ActivityProgress::class);
+    }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(ActivitySubmission::class)->orderBy('attempt_number');
     }
 
     public function isPublished(): bool
@@ -109,5 +115,12 @@ class Activity extends Model
             'tutor' => $configuration['tutor'] ?? [],
             'extensions' => $configuration['extensions'] ?? [],
         ]);
+    }
+
+    public function maxAttempts(): int
+    {
+        $configured = $this->configuration['max_attempts'] ?? 1;
+
+        return max(1, (int) $configured);
     }
 }

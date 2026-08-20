@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->hasMany(ActivityProgress::class);
     }
 
+    public function activitySubmissions(): HasMany
+    {
+        return $this->hasMany(ActivitySubmission::class);
+    }
+
     public function homeRouteName(): string
     {
         return $this->isStudent() ? 'student.dashboard' : 'tutor.workspace';

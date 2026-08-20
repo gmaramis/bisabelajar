@@ -1,6 +1,6 @@
 # TASK-204 — Student Activity Experience
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Provide a consistent student-facing Activity experience.

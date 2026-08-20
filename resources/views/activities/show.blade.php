@@ -57,5 +57,46 @@
                 </form>
             @endif
         </section>
+
+        @php
+            $submissions = $submissions ?? collect();
+            $remainingAttempts = $activity->maxAttempts() - $submissions->count();
+            $canSubmit = $startStatus !== \App\Enums\ProgressStatus::NotStarted && $remainingAttempts > 0;
+        @endphp
+
+        <section class="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <h2 class="mb-2 text-lg font-semibold">Submission</h2>
+            <p class="mb-3 text-sm text-slate-500">Attempt {{ $submissions->count() }}/{{ $activity->maxAttempts() }} · Submission is not a grade.</p>
+
+            @if ($errors->any())
+                <div class="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            @if ($canSubmit)
+                <form method="POST" action="{{ route('student.activities.submit', [$course, $module, $learningUnit, $activity]) }}" class="space-y-3">
+                    @csrf
+                    <div>
+                        <label for="payload_body" class="mb-1 block text-sm font-medium">Your response</label>
+                        <textarea id="payload_body" name="payload[body]" rows="5" required class="w-full rounded-md border border-slate-300 px-3 py-2">{{ old('payload.body') }}</textarea>
+                    </div>
+                    <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Submit</button>
+                </form>
+            @elseif ($startStatus !== \App\Enums\ProgressStatus::NotStarted)
+                <p class="text-sm text-slate-600">No remaining attempts.</p>
+            @endif
+
+            @if ($submissions->isNotEmpty())
+                <ol class="mt-4 space-y-3">
+                    @foreach ($submissions as $submission)
+                        <li class="rounded-md border border-slate-200 p-3 text-sm">
+                            <p class="text-slate-500">Attempt {{ $submission->attempt_number }} · Version {{ $submission->version }} · {{ strtoupper($submission->status->value) }}</p>
+                            <p class="mt-1 whitespace-pre-wrap text-slate-700">{{ $submission->payload['body'] ?? '' }}</p>
+                        </li>
+                    @endforeach
+                </ol>
+            @endif
+        </section>
     @endif
 @endsection
