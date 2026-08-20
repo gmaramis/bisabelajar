@@ -9,6 +9,7 @@ use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\EnrollmentController;
 use App\Http\Controllers\Student\LearningController;
 use App\Http\Controllers\Student\LearningProgressController;
+use App\Http\Controllers\Tutor\ActivityController;
 use App\Http\Controllers\Tutor\CourseController;
 use App\Http\Controllers\Tutor\LearningMaterialController;
 use App\Http\Controllers\Tutor\LearningUnitController;
@@ -87,5 +88,9 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('courses/{course}/modules/{module}/units/{learningUnit}/materials/{material}', [LearningMaterialController::class, 'destroy'])->name('materials.destroy');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/materials/{material}/publish', [LearningMaterialController::class, 'publish'])->name('materials.publish');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/materials/{material}/unpublish', [LearningMaterialController::class, 'unpublish'])->name('materials.unpublish');
+
+        Route::get('courses/{course}/modules/{module}/units/{learningUnit}/activities/create', [ActivityController::class, 'create'])->name('activities.create');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities', [ActivityController::class, 'store'])->name('activities.store');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/reorder', [ActivityController::class, 'reorder'])->name('activities.reorder');
     });
 });

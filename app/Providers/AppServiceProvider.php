@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Activity;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\LearningMaterial;
@@ -9,6 +10,7 @@ use App\Models\LearningProgress;
 use App\Models\LearningUnit;
 use App\Models\Module;
 use App\Models\User;
+use App\Policies\ActivityPolicy;
 use App\Policies\CoursePolicy;
 use App\Policies\EnrollmentPolicy;
 use App\Policies\LearningMaterialPolicy;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Module::class, ModulePolicy::class);
         Gate::policy(LearningUnit::class, LearningUnitPolicy::class);
         Gate::policy(LearningMaterial::class, LearningMaterialPolicy::class);
+        Gate::policy(Activity::class, ActivityPolicy::class);
         Gate::policy(Enrollment::class, EnrollmentPolicy::class);
         Gate::policy(LearningProgress::class, LearningProgressPolicy::class);
 

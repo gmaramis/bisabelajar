@@ -16,8 +16,8 @@ use Illuminate\Support\Str;
 /**
  * Atomic learning container inside a Module.
  *
- * Materials attach in TASK-006. Later milestones may associate activities,
- * evidence, mastery rules, objectives, and prerequisites.
+ * Materials and generic activities attach here. Type-specific engines,
+ * evidence, mastery rules, objectives, and prerequisites remain later work.
  */
 #[Fillable(['module_id', 'title', 'slug', 'description', 'sort_order', 'status'])]
 class LearningUnit extends Model
@@ -44,6 +44,11 @@ class LearningUnit extends Model
     public function materials(): HasMany
     {
         return $this->hasMany(LearningMaterial::class)->orderBy('sort_order');
+    }
+
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class)->orderBy('sort_order');
     }
 
     public function learningProgress(): HasMany

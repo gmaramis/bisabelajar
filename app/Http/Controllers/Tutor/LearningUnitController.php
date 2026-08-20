@@ -51,7 +51,7 @@ class LearningUnitController extends Controller
         return view('tutor.learning-units.edit', [
             'course' => $course,
             'module' => $module,
-            'learningUnit' => $learningUnit->load('materials'),
+            'learningUnit' => $learningUnit->load(['materials', 'activities']),
         ]);
     }
 
