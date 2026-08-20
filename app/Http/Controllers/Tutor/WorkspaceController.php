@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Tutor;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class WorkspaceController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): RedirectResponse
     {
-        return view('tutor.workspace', [
-            'user' => $request->user(),
-        ]);
+        return redirect()->route('tutor.courses.index');
     }
 }

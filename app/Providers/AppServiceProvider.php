@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Course;
 use App\Models\User;
+use App\Policies\CoursePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Course::class, CoursePolicy::class);
+
         Gate::define('updateOwnedContent', function (User $user, User $owner): bool {
             return $user->isTutor() && $user->is($owner);
         });

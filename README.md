@@ -25,6 +25,10 @@ Session authentication is built with Laravel's native Auth (no Breeze, Fortify, 
 
 Roles: **STUDENT** and **TUTOR**. Authorization is enforced server-side via `auth` middleware, `role` middleware, and ownership gates. Tutors may only mutate their own future course content.
 
+## Courses
+
+Tutors create, edit, publish, and archive their own courses. Status: DRAFT, PUBLISHED, ARCHIVED. Visibility: PRIVATE, UNLISTED, PUBLIC. Courses have no semester or fixed meeting count.
+
 ## Local Setup
 
 1. Copy `.env.example` to `.env` and set a MySQL database (default name: `bisabelajar`).

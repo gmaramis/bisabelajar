@@ -49,6 +49,10 @@ class AuthorizationTest extends TestCase
 
         $this->actingAs($tutor)
             ->get(route('tutor.workspace'))
+            ->assertRedirect(route('tutor.courses.index'));
+
+        $this->actingAs($tutor)
+            ->get(route('tutor.courses.index'))
             ->assertOk()
             ->assertSee('Tutor workspace');
     }
