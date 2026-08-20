@@ -14,9 +14,7 @@ class ActivityPolicy
             return true;
         }
 
-        $unit = $activity->learningUnit;
-
-        return $activity->isPublished() && $user->can('learn', $unit);
+        return $activity->isPublished() && $user->can('learn', $activity->learningUnit);
     }
 
     public function create(User $user, LearningUnit $learningUnit): bool
@@ -46,6 +44,11 @@ class ActivityPolicy
 
     public function unpublish(User $user, Activity $activity): bool
     {
-        return $this->update($user, $activity);
+        return $this->update($user, $activity) && $activity->isPublished();
+    }
+
+    public function archive(User $user, Activity $activity): bool
+    {
+        return $this->update($user, $activity) && ! $activity->isArchived();
     }
 }

@@ -1,6 +1,6 @@
 # TASK-202 — Activity Type & Configuration
 
-**Status:** REVIEW
+**Status:** ACCEPTED
 
 ## Objective
 Allow Tutor to create activities with validated, extensible type-specific configuration.

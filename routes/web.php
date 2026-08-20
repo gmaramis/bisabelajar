@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityAccessController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CourseCatalogController;
 use App\Http\Controllers\LearningMaterialAccessController;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function (): void {
         ->name('materials.show');
     Route::get('courses/{course:slug}/units/{learningUnit}/materials/{material}/file', [LearningMaterialAccessController::class, 'download'])
         ->name('materials.download');
+    Route::get('courses/{course:slug}/units/{learningUnit}/activities/{activity}', [ActivityAccessController::class, 'show'])
+        ->name('activities.show');
 
     Route::middleware('role:student')->group(function (): void {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
@@ -92,5 +95,10 @@ Route::middleware('auth')->group(function (): void {
         Route::get('courses/{course}/modules/{module}/units/{learningUnit}/activities/create', [ActivityController::class, 'create'])->name('activities.create');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities', [ActivityController::class, 'store'])->name('activities.store');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/reorder', [ActivityController::class, 'reorder'])->name('activities.reorder');
+        Route::get('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+        Route::put('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/publish', [ActivityController::class, 'publish'])->name('activities.publish');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/unpublish', [ActivityController::class, 'unpublish'])->name('activities.unpublish');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/archive', [ActivityController::class, 'archive'])->name('activities.archive');
     });
 });

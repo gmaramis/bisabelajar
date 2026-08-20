@@ -61,6 +61,11 @@ class Activity extends Model
         return $this->status === ActivityStatus::Published;
     }
 
+    public function isArchived(): bool
+    {
+        return $this->status === ActivityStatus::Archived;
+    }
+
     /**
      * @param  Builder<Activity>  $query
      * @return Builder<Activity>
@@ -72,7 +77,8 @@ class Activity extends Model
 
     public function canBePublished(): bool
     {
-        return $this->learningUnit->isPublished()
+        return ! $this->isArchived()
+            && $this->learningUnit->isPublished()
             && $this->learningUnit->canBePublished();
     }
 

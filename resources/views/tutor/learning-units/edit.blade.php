@@ -108,6 +108,19 @@
                                         <button type="submit" class="underline">Up</button>
                                     </form>
                                 @endif
+                                <a href="{{ route('tutor.activities.edit', [$course, $module, $learningUnit, $activity]) }}" class="underline">Edit</a>
+                                <form method="POST" action="{{ route('tutor.activities.publish', [$course, $module, $learningUnit, $activity]) }}">
+                                    @csrf
+                                    <button type="submit" class="underline">Publish</button>
+                                </form>
+                                <form method="POST" action="{{ route('tutor.activities.unpublish', [$course, $module, $learningUnit, $activity]) }}">
+                                    @csrf
+                                    <button type="submit" class="underline">Unpublish</button>
+                                </form>
+                                <form method="POST" action="{{ route('tutor.activities.archive', [$course, $module, $learningUnit, $activity]) }}" onsubmit="return confirm('Archive this activity?')">
+                                    @csrf
+                                    <button type="submit" class="underline">Archive</button>
+                                </form>
                             </div>
                         </div>
                     </li>
