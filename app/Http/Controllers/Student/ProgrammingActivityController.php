@@ -195,18 +195,11 @@ class ProgrammingActivityController extends Controller implements HasMiddleware
             'submitted_at' => now(),
         ]);
 
-        // Log submission event
-        \App\Models\LearningEvent::record(
-            $result['passes_evaluation'] ? 'SUBMISSION_ACCEPTED' : 'SUBMISSION_REJECTED',
-            $user->id,
-            $course->id,
-            $activity->id,
-            [
-                'submission_id' => $submission->id,
-                'attempt_number' => $submission->attempt_number,
-                'passes_evaluation' => $result['passes_evaluation'],
-                'test_summary' => $result['test_summary'],
-            ]
+        $this->programmingActivityService->recordSubmissionOutcome(
+            $user,
+            $programmingActivity,
+            $result,
+            $submission
         );
 
         return response()->json([

@@ -193,22 +193,13 @@ class ProgrammingActivityService
             'passes_evaluation' => $passesEvaluation,
             'test_summary' => $result['test_summary'],
         ]);
-        
-        // Also log outcome event for analytics
-        $outcomeEventType = $passesEvaluation ? 'submission_accepted' : 'submission_rejected';
-        $this->logLearningEvent($user, $programmingActivity, $outcomeEventType, [
-            'execution_id' => $execution->id,
-            'status' => $result['status'],
-            'language' => $profile->identifier,
-            'passes_evaluation' => $passesEvaluation,
-            'test_summary' => $result['test_summary'],
-        ]);
 
         return [
             'success' => true,
             'execution_id' => $execution->id,
             'passes_evaluation' => $passesEvaluation,
             'status' => $result['status'],
+            'language' => $profile->identifier,
             'stdout' => $result['stdout'],
             'stderr' => $result['stderr'],
             'compile_error' => $result['compile_error'],
@@ -218,6 +209,37 @@ class ProgrammingActivityService
             'execution_duration_ms' => $result['execution_duration_ms'],
             'test_summary' => $result['test_summary'],
         ];
+    }
+
+    /**
+     * Record the canonical M3 outcome event after ActivitySubmission exists
+     * so validation runs once with complete provenance.
+     */
+    public function recordSubmissionOutcome(
+        User $user,
+        ProgrammingActivity $programmingActivity,
+        array $submitResult,
+        \App\Models\ActivitySubmission $submission
+    ): \App\Models\LearningEvent {
+        $outcomeEventType = ($submitResult['passes_evaluation'] ?? false)
+            ? 'submission_accepted'
+            : 'submission_rejected';
+
+        return \App\Models\LearningEvent::record(
+            $outcomeEventType,
+            $user->id,
+            $programmingActivity->activity->learningUnit->module->course_id,
+            $programmingActivity->activity_id,
+            [
+                'execution_id' => $submitResult['execution_id'] ?? null,
+                'status' => $submitResult['status'] ?? null,
+                'language' => $submitResult['language'] ?? null,
+                'passes_evaluation' => $submitResult['passes_evaluation'] ?? null,
+                'test_summary' => $submitResult['test_summary'] ?? null,
+                'submission_id' => $submission->id,
+                'attempt_number' => $submission->attempt_number,
+            ]
+        );
     }
 
     /**
