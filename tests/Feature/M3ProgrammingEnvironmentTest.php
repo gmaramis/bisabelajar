@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Activity;
+use App\Models\ActivityProgress;
 use App\Models\CodeExecution;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\LanguageExecutionProfile;
+use App\Models\LearningEvent;
 use App\Models\LearningUnit;
 use App\Models\Module;
 use App\Models\ProgrammingActivity;
@@ -69,6 +71,7 @@ class M3ProgrammingEnvironmentTest extends TestCase
             'configuration' => [
                 'instructions' => 'Write a program that prints "Hello, World!"',
                 'language' => 'python',
+                'completion_rule' => \App\Enums\CompletionRule::Manual->value,
             ],
         ]);
 
@@ -418,5 +421,200 @@ class M3ProgrammingEnvironmentTest extends TestCase
         $this->assertTrue($response->json('success'));
         $execution = $response->json('execution');
         $this->assertNotEquals(0, $execution['exit_code']);
+    }
+
+    /**
+     * @test
+     * M4-T01: activity_started event is recorded when student starts an activity
+     */
+    public function test_activity_started_event_is_recorded(): void
+    {
+        $response = $this->actingAs($this->student)
+            ->postJson(route('student.activities.start', [
+                'course' => $this->course->slug,
+                'module' => $this->module->id,
+                'learningUnit' => $this->learningUnit->id,
+                'activity' => $this->activity->id,
+            ]));
+
+        // The controller returns a redirect (302) - follow it
+        $response->assertRedirect();
+        
+        // Check learning event was recorded
+        $this->assertDatabaseHas('learning_events', [
+            'user_id' => $this->student->id,
+            'activity_id' => $this->activity->id,
+            'event_type' => 'activity_started',
+        ]);
+
+        $event = \App\Models\LearningEvent::where('event_type', 'activity_started')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->first();
+
+        $this->assertNotNull($event);
+        $this->assertArrayHasKey('enrollment_id', $event->payload);
+        $this->assertArrayHasKey('progress_status', $event->payload);
+        $this->assertEquals('in_progress', $event->payload['progress_status']);
+    }
+
+    /**
+     * @test
+     * M4-T01: activity_completed event is recorded when student completes an activity
+     */
+    public function test_activity_completed_event_is_recorded(): void
+    {
+        // Start activity first
+        $this->actingAs($this->student)
+            ->postJson(route('student.activities.start', [
+                'course' => $this->course->slug,
+                'module' => $this->module->id,
+                'learningUnit' => $this->learningUnit->id,
+                'activity' => $this->activity->id,
+            ]));
+
+        // Complete the activity via the completion endpoint
+        $this->actingAs($this->student)
+            ->post(route('student.activities.complete', [
+                'course' => $this->course->slug,
+                'module' => $this->module->id,
+                'learningUnit' => $this->learningUnit->id,
+                'activity' => $this->activity->id,
+            ]));
+
+        // Check learning event was recorded
+        $this->assertDatabaseHas('learning_events', [
+            'user_id' => $this->student->id,
+            'activity_id' => $this->activity->id,
+            'event_type' => 'activity_completed',
+        ]);
+
+        $event = \App\Models\LearningEvent::where('event_type', 'activity_completed')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->first();
+
+        $this->assertNotNull($event);
+        $this->assertArrayHasKey('enrollment_id', $event->payload);
+        $this->assertArrayHasKey('progress_status', $event->payload);
+        $this->assertArrayHasKey('completed_at', $event->payload);
+        $this->assertEquals('completed', $event->payload['progress_status']);
+    }
+
+    /**
+     * @test
+     * M4-T01: Task context fields (concept, learning_objective, difficulty) are available on Activity
+     */
+    public function test_activity_has_task_context_fields(): void
+    {
+        // Create activity with task context
+        $activity = Activity::factory()->create([
+            'learning_unit_id' => $this->learningUnit->id,
+            'title' => 'Variables Exercise',
+            'type' => \App\Enums\ActivityType::CodingExercise,
+            'status' => 'published',
+            'concept' => 'variables',
+            'learning_objective' => 'Students can declare and use variables in Python',
+            'difficulty' => 'beginner',
+        ]);
+
+        $this->assertEquals('variables', $activity->getConcept());
+        $this->assertEquals('Students can declare and use variables in Python', $activity->getLearningObjective());
+        $this->assertEquals('beginner', $activity->getDifficulty());
+
+        // Test nullable - should be null when not set
+        $activity2 = Activity::factory()->create([
+            'learning_unit_id' => $this->learningUnit->id,
+            'title' => 'No Context Exercise',
+            'type' => \App\Enums\ActivityType::CodingExercise,
+            'status' => 'published',
+        ]);
+
+        $this->assertNull($activity2->getConcept());
+        $this->assertNull($activity2->getLearningObjective());
+        $this->assertNull($activity2->getDifficulty());
+    }
+
+    /**
+     * @test
+     * M4-T01: No duplicate activity_started event when completing an already-started activity
+     */
+    public function test_no_duplicate_activity_started_on_completion(): void
+    {
+        // Start activity
+        $this->actingAs($this->student)
+            ->postJson(route('student.activities.start', [
+                'course' => $this->course->slug,
+                'module' => $this->module->id,
+                'learningUnit' => $this->learningUnit->id,
+                'activity' => $this->activity->id,
+            ]));
+
+        // Verify exactly one activity_started event exists
+        $startedCountBefore = \App\Models\LearningEvent::where('event_type', 'activity_started')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->count();
+
+        $this->assertEquals(1, $startedCountBefore, 'Exactly one activity_started event should exist after starting');
+
+        // Complete the activity
+        $this->actingAs($this->student)
+            ->post(route('student.activities.complete', [
+                'course' => $this->course->slug,
+                'module' => $this->module->id,
+                'learningUnit' => $this->learningUnit->id,
+                'activity' => $this->activity->id,
+            ]));
+
+        // Verify still exactly one activity_started event (no duplicate)
+        $startedCountAfter = \App\Models\LearningEvent::where('event_type', 'activity_started')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->count();
+
+        $this->assertEquals(1, $startedCountAfter, 'No duplicate activity_started should be emitted on completion');
+
+        // Verify activity_completed was recorded exactly once
+        $completedCount = \App\Models\LearningEvent::where('event_type', 'activity_completed')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->count();
+
+        $this->assertEquals(1, $completedCount, 'activity_completed should be recorded exactly once');
+    }
+
+    /**
+     * @test
+     * M4-T01: Completing an activity that was never started records both events correctly
+     */
+    public function test_complete_never_started_activity_records_both_events(): void
+    {
+        // Do NOT start the activity first
+
+        // Complete the activity directly
+        $this->actingAs($this->student)
+            ->post(route('student.activities.complete', [
+                'course' => $this->course->slug,
+                'module' => $this->module->id,
+                'learningUnit' => $this->learningUnit->id,
+                'activity' => $this->activity->id,
+            ]));
+
+        // Verify activity_started was recorded (establishing start state)
+        $startedCount = \App\Models\LearningEvent::where('event_type', 'activity_started')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->count();
+
+        $this->assertEquals(1, $startedCount, 'activity_started should be recorded when completing never-started activity');
+
+        // Verify activity_completed was recorded exactly once
+        $completedCount = \App\Models\LearningEvent::where('event_type', 'activity_completed')
+            ->where('user_id', $this->student->id)
+            ->where('activity_id', $this->activity->id)
+            ->count();
+
+        $this->assertEquals(1, $completedCount, 'activity_completed should be recorded exactly once');
     }
 }

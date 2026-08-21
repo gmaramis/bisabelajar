@@ -33,6 +33,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'status',
     'sort_order',
     'configuration',
+    'concept',
+    'learning_objective',
+    'difficulty',
 ])]
 class Activity extends Model
 {
@@ -56,6 +59,9 @@ class Activity extends Model
             'status' => ActivityStatus::class,
             'sort_order' => 'integer',
             'configuration' => 'array',
+            'concept' => 'string',
+            'learning_objective' => 'string',
+            'difficulty' => 'string',
         ];
     }
 
@@ -133,6 +139,21 @@ class Activity extends Model
         $configured = $this->configuration['max_attempts'] ?? 1;
 
         return max(1, (int) $configured);
+    }
+
+    public function getConcept(): ?string
+    {
+        return $this->concept;
+    }
+
+    public function getLearningObjective(): ?string
+    {
+        return $this->learning_objective;
+    }
+
+    public function getDifficulty(): ?string
+    {
+        return $this->difficulty;
     }
 
     public function completionRule(): CompletionRule
