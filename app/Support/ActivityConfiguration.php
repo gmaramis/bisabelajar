@@ -21,6 +21,9 @@ final class ActivityConfiguration
         'recommendation',
         'code_execution',
         'sandbox',
+        'language_execution_profile', // M3: handled separately
+        'starter_code', // M3: handled in ProgrammingActivity
+        'test_cases', // M3: handled separately
     ];
 
     /**
@@ -31,7 +34,7 @@ final class ActivityConfiguration
         $keys = match ($type) {
             ActivityType::Lesson, ActivityType::Assignment, ActivityType::Project => ['instructions'],
             ActivityType::Quiz, ActivityType::Exam => ['instructions', 'max_attempts', 'time_limit_minutes'],
-            ActivityType::CodingExercise => ['instructions', 'language'],
+            ActivityType::CodingExercise => ['instructions', 'language', 'language_execution_profile_id', 'starter_code', 'editable_files', 'execution_time_limit_seconds', 'memory_limit_mb'],
             ActivityType::Discussion => ['instructions', 'prompt'],
         };
 
@@ -49,7 +52,7 @@ final class ActivityConfiguration
             ActivityType::Lesson, ActivityType::Discussion => ['notes'],
             ActivityType::Quiz, ActivityType::Exam => ['notes', 'answer_key'],
             ActivityType::Assignment, ActivityType::Project => ['notes', 'rubric'],
-            ActivityType::CodingExercise => ['notes', 'expected_output'],
+            ActivityType::CodingExercise => ['notes', 'expected_output', 'test_cases', 'evaluation_config'],
         };
     }
 
@@ -95,12 +98,19 @@ final class ActivityConfiguration
             'configuration.max_attempts' => ['nullable', 'integer', 'min:1', 'max:20'],
             'configuration.time_limit_minutes' => ['nullable', 'integer', 'min:1', 'max:600'],
             'configuration.language' => ['nullable', 'string', 'max:32'],
+            'configuration.language_execution_profile_id' => ['nullable', 'integer', 'exists:language_execution_profiles,id'],
+            'configuration.starter_code' => ['nullable', 'string', 'max:100000'],
+            'configuration.editable_files' => ['nullable', 'array'],
+            'configuration.execution_time_limit_seconds' => ['nullable', 'integer', 'min:1', 'max:300'],
+            'configuration.memory_limit_mb' => ['nullable', 'integer', 'min:64', 'max:2048'],
             'configuration.completion_rule' => ['nullable', 'string', Rule::enum(CompletionRule::class)],
             'configuration.tutor' => ['nullable', 'array'],
             'configuration.tutor.notes' => ['nullable', 'string', 'max:10000'],
             'configuration.tutor.answer_key' => ['nullable', 'string', 'max:10000'],
             'configuration.tutor.rubric' => ['nullable', 'string', 'max:10000'],
             'configuration.tutor.expected_output' => ['nullable', 'string', 'max:10000'],
+            'configuration.tutor.test_cases' => ['nullable', 'array'],
+            'configuration.tutor.evaluation_config' => ['nullable', 'array'],
             'configuration.extensions' => ['nullable', 'array'],
         ];
     }
@@ -127,6 +137,19 @@ final class ActivityConfiguration
 
         if ($type === ActivityType::Discussion && ! filled($configuration['prompt'] ?? null)) {
             $validator->errors()->add('configuration.prompt', 'A discussion prompt is required.');
+        }
+
+        // M3: Validate CodingExercise specific fields
+        if ($type === ActivityType::CodingExercise) {
+            if (isset($configuration['language_execution_profile_id']) && ! is_int($configuration['language_execution_profile_id'])) {
+                $validator->errors()->add('configuration.language_execution_profile_id', 'Language execution profile ID must be an integer.');
+            }
+            if (isset($configuration['execution_time_limit_seconds']) && ($configuration['execution_time_limit_seconds'] < 1 || $configuration['execution_time_limit_seconds'] > 300)) {
+                $validator->errors()->add('configuration.execution_time_limit_seconds', 'Execution time limit must be between 1 and 300 seconds.');
+            }
+            if (isset($configuration['memory_limit_mb']) && ($configuration['memory_limit_mb'] < 64 || $configuration['memory_limit_mb'] > 2048)) {
+                $validator->errors()->add('configuration.memory_limit_mb', 'Memory limit must be between 64 and 2048 MB.');
+            }
         }
 
         $tutor = $configuration['tutor'] ?? [];

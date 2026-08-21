@@ -5,6 +5,10 @@ namespace App\Models;
 use App\Enums\ActivityStatus;
 use App\Enums\ActivityType;
 use App\Enums\CompletionRule;
+use App\Models\ActivityProgress;
+use App\Models\ActivitySubmission;
+use App\Models\LearningUnit;
+use App\Models\ProgrammingActivity;
 use App\Support\ActivityConfiguration;
 use Database\Factories\ActivityFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -13,6 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Generic learning activity attached to a Learning Unit.
@@ -67,6 +72,11 @@ class Activity extends Model
     public function submissions(): HasMany
     {
         return $this->hasMany(ActivitySubmission::class)->orderBy('attempt_number');
+    }
+
+    public function programmingActivity(): HasOne
+    {
+        return $this->hasOne(ProgrammingActivity::class);
     }
 
     public function isPublished(): bool

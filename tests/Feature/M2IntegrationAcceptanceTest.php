@@ -296,7 +296,13 @@ class M2IntegrationAcceptanceTest extends TestCase
         $this->assertFalse(class_exists(FilamentServiceProvider::class));
         $this->assertFalse(class_exists('App\\Nexus\\NexusService'));
         $this->assertFalse(Schema::hasTable('masteries'));
-        $this->assertFalse(Schema::hasTable('code_executions'));
+        // M3 tables now exist
+        $this->assertTrue(Schema::hasTable('code_executions'));
+        $this->assertTrue(Schema::hasTable('language_execution_profiles'));
+        $this->assertTrue(Schema::hasTable('programming_activities'));
+        $this->assertTrue(Schema::hasTable('test_cases'));
+        $this->assertTrue(Schema::hasTable('test_results'));
+        $this->assertTrue(Schema::hasTable('learning_events'));
         $this->assertFalse(Schema::hasColumn('activity_progress', 'mastery_score'));
         $this->assertFalse(Schema::hasColumn('courses', 'meeting_number'));
         $this->assertFalse(Schema::hasColumn('courses', 'meeting_count'));

@@ -13,12 +13,14 @@ use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\EnrollmentController;
 use App\Http\Controllers\Student\LearningController;
 use App\Http\Controllers\Student\LearningProgressController;
+use App\Http\Controllers\Student\ProgrammingActivityController as StudentProgrammingActivityController;
 use App\Http\Controllers\Tutor\ActivityController;
 use App\Http\Controllers\Tutor\CourseController;
 use App\Http\Controllers\Tutor\LearningMaterialController;
 use App\Http\Controllers\Tutor\LearningUnitController;
 use App\Http\Controllers\Tutor\ModuleController;
 use App\Http\Controllers\Tutor\OwnedContentController;
+use App\Http\Controllers\Tutor\ProgrammingActivityController as TutorProgrammingActivityController;
 use App\Http\Controllers\Tutor\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +60,12 @@ Route::middleware('auth')->group(function (): void {
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/submissions', [ActivitySubmissionController::class, 'store'])->name('student.activities.submit');
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/complete', [ActivityCompletionController::class, 'complete'])->name('student.activities.complete');
         Route::post('courses/{course:slug}/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
+
+        // M3 Programming Activity Routes
+        Route::get('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming', [StudentProgrammingActivityController::class, 'show'])->name('student.activities.programming.show');
+        Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming/run', [StudentProgrammingActivityController::class, 'run'])->name('student.activities.programming.run');
+        Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming/submit', [StudentProgrammingActivityController::class, 'submit'])->name('student.activities.programming.submit');
+        Route::get('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming/history', [StudentProgrammingActivityController::class, 'history'])->name('student.activities.programming.history');
     });
 
     Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function (): void {
@@ -106,5 +114,17 @@ Route::middleware('auth')->group(function (): void {
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/publish', [ActivityController::class, 'publish'])->name('activities.publish');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/unpublish', [ActivityController::class, 'unpublish'])->name('activities.unpublish');
         Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/archive', [ActivityController::class, 'archive'])->name('activities.archive');
+
+        // M3 Programming Activity Tutor Routes
+        Route::get('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/programming', [TutorProgrammingActivityController::class, 'show'])->name('activities.programming.show');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/programming', [TutorProgrammingActivityController::class, 'store'])->name('activities.programming.store');
+        Route::put('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/programming', [TutorProgrammingActivityController::class, 'update'])->name('activities.programming.update');
+
+        // Test Case Routes
+        Route::get('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/test-cases', [TutorProgrammingActivityController::class, 'testCases'])->name('activities.test-cases.index');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/test-cases', [TutorProgrammingActivityController::class, 'storeTestCase'])->name('activities.test-cases.store');
+        Route::put('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/test-cases/{testCase}', [TutorProgrammingActivityController::class, 'updateTestCase'])->name('activities.test-cases.update');
+        Route::delete('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/test-cases/{testCase}', [TutorProgrammingActivityController::class, 'destroyTestCase'])->name('activities.test-cases.destroy');
+        Route::post('courses/{course}/modules/{module}/units/{learningUnit}/activities/{activity}/test-cases/reorder', [TutorProgrammingActivityController::class, 'reorderTestCases'])->name('activities.test-cases.reorder');
     });
 });
