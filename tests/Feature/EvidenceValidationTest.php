@@ -591,10 +591,14 @@ class EvidenceValidationTest extends TestCase
             ->first();
         $this->assertSame('Repeated submission failures detected', $behavioral->observed_value['summary']);
 
+        // M4-T02 must not embed learning-state fields on validated evidence itself.
         $this->assertFalse(Schema::hasColumn('validated_evidence', 'learning_state'));
         $this->assertFalse(Schema::hasColumn('validated_evidence', 'cognitive_state'));
         $this->assertFalse(Schema::hasColumn('validated_evidence', 'affective_state'));
-        $this->assertFalse(Schema::hasTable('learning_states'));
+
+        // Recording/validating evidence alone must not create a Learning State row.
+        // Learning State inference belongs to M4-T03 and is invoked explicitly.
+        $this->assertSame(0, \App\Models\LearningState::query()->count());
         $this->assertFalse(class_exists('App\\Services\\Research\\LearningStateManager'));
         $this->assertFalse(class_exists('App\\Services\\Research\\EvidenceFusionService'));
     }

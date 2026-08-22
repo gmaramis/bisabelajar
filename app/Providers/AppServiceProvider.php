@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\Research\ReassessmentCandidateGenerator;
 use App\Models\Activity;
 use App\Models\ActivityProgress;
 use App\Models\ActivitySubmission;
@@ -21,6 +22,7 @@ use App\Policies\LearningMaterialPolicy;
 use App\Policies\LearningProgressPolicy;
 use App\Policies\LearningUnitPolicy;
 use App\Policies\ModulePolicy;
+use App\Services\Research\Reassessment\DeterministicReassessmentCandidateGenerator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +33,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            ReassessmentCandidateGenerator::class,
+            DeterministicReassessmentCandidateGenerator::class,
+        );
     }
 
     /**

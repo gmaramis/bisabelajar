@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Enums\ActivityStatus;
 use App\Enums\ActivityType;
+use App\Enums\BloomLevel;
 use App\Enums\CompletionRule;
+use App\Enums\DaveLevel;
 use App\Models\ActivityProgress;
 use App\Models\ActivitySubmission;
 use App\Models\LearningUnit;
@@ -36,6 +38,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'concept',
     'learning_objective',
     'difficulty',
+    'bloom_demand',
+    'dave_demand',
 ])]
 class Activity extends Model
 {
@@ -62,6 +66,8 @@ class Activity extends Model
             'concept' => 'string',
             'learning_objective' => 'string',
             'difficulty' => 'string',
+            'bloom_demand' => BloomLevel::class,
+            'dave_demand' => DaveLevel::class,
         ];
     }
 
@@ -154,6 +160,22 @@ class Activity extends Model
     public function getDifficulty(): ?string
     {
         return $this->difficulty;
+    }
+
+    /**
+     * Expected cognitive task demand (Revised Bloom). Not learner capability.
+     */
+    public function getBloomDemand(): ?BloomLevel
+    {
+        return $this->bloom_demand;
+    }
+
+    /**
+     * Expected psychomotor task demand (Dave). Not demonstrated learner skill.
+     */
+    public function getDaveDemand(): ?DaveLevel
+    {
+        return $this->dave_demand;
     }
 
     public function completionRule(): CompletionRule
