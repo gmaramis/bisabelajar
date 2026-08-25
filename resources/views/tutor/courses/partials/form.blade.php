@@ -1,36 +1,33 @@
 @if ($errors->any())
-    <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    <x-alert variant="danger" class="mb-4">
         {{ $errors->first() }}
-    </div>
+    </x-alert>
 @endif
 
-<div>
-    <label for="title" class="mb-1 block text-sm font-medium">Title</label>
-    <input id="title" name="title" type="text" value="{{ old('title', $course->title ?? '') }}" required class="w-full rounded-md border border-slate-300 px-3 py-2">
-</div>
+<div class="space-y-4">
+    <x-form-group label="Title" name="title" required>
+        <x-input id="title" name="title" type="text" value="{{ old('title', $course->title ?? '') }}" required placeholder="e.g. Pemrograman Web Dasar" />
+    </x-form-group>
 
-<div>
-    <label for="slug" class="mb-1 block text-sm font-medium">Slug (optional)</label>
-    <input id="slug" name="slug" type="text" value="{{ old('slug', $course->slug ?? '') }}" class="w-full rounded-md border border-slate-300 px-3 py-2">
-</div>
+    <x-form-group label="Slug (optional)" name="slug" help="Biarkan kosong untuk membuat slug otomatis dari judul.">
+        <x-input id="slug" name="slug" type="text" value="{{ old('slug', $course->slug ?? '') }}" placeholder="e.g. pemrograman-web-dasar" />
+    </x-form-group>
 
-<div>
-    <label for="description" class="mb-1 block text-sm font-medium">Description</label>
-    <textarea id="description" name="description" rows="5" class="w-full rounded-md border border-slate-300 px-3 py-2">{{ old('description', $course->description ?? '') }}</textarea>
-</div>
+    <x-form-group label="Description" name="description">
+        <x-textarea id="description" name="description" rows="4" placeholder="Deskripsi ringkas mengenai kursus ini...">{{ old('description', $course->description ?? '') }}</x-textarea>
+    </x-form-group>
 
-<div>
-    <label for="thumbnail" class="mb-1 block text-sm font-medium">Thumbnail reference (optional)</label>
-    <input id="thumbnail" name="thumbnail" type="text" value="{{ old('thumbnail', $course->thumbnail ?? '') }}" class="w-full rounded-md border border-slate-300 px-3 py-2">
-</div>
+    <x-form-group label="Thumbnail reference (optional)" name="thumbnail">
+        <x-input id="thumbnail" name="thumbnail" type="text" value="{{ old('thumbnail', $course->thumbnail ?? '') }}" placeholder="e.g. images/course-thumb.webp" />
+    </x-form-group>
 
-<div>
-    <label for="visibility" class="mb-1 block text-sm font-medium">Visibility</label>
-    <select id="visibility" name="visibility" class="w-full rounded-md border border-slate-300 px-3 py-2">
-        @foreach ($visibilities as $visibility)
-            <option value="{{ $visibility->value }}" @selected(old('visibility', isset($course) ? $course->visibility->value : 'private') === $visibility->value)>
-                {{ strtoupper($visibility->value) }}
-            </option>
-        @endforeach
-    </select>
+    <x-form-group label="Visibility" name="visibility" required>
+        <x-select id="visibility" name="visibility">
+            @foreach ($visibilities as $visibility)
+                <option value="{{ $visibility->value }}" @selected(old('visibility', isset($course) ? $course->visibility->value : 'private') === $visibility->value)>
+                    {{ strtoupper($visibility->value) }}
+                </option>
+            @endforeach
+        </x-select>
+    </x-form-group>
 </div>

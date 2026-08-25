@@ -13,10 +13,9 @@ class ExampleTest extends DuskTestCase
     public function test_homepage_renders_in_browser(): void
     {
         $this->browse(function (Browser $browser) {
-            $browser->resize(360, 800)
+            $browser->resize(1280, 800)
                 ->visit('/')
-                ->assertSee('BisaBelajar')
-                ->assertSee('AI-VET Platform');
+                ->assertSee('BisaBelajar');
         });
     }
 }

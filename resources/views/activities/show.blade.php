@@ -1,73 +1,106 @@
 @extends('layouts.app')
 
-@section('title', $activity->title.' — '.config('app.name'))
+@section('title', $activity->title.' — '.config('app.name', 'BisaBelajar'))
 
 @section('content')
-    @if (auth()->user()?->isStudent() && $module)
-        <nav class="mb-4 flex flex-wrap gap-2 text-sm text-slate-600">
-            <a href="{{ route('student.courses.show', $course) }}" class="underline">{{ $course->title }}</a>
-            <span>/</span>
-            <a href="{{ route('student.modules.show', [$course, $module]) }}" class="underline">{{ $module->title }}</a>
-            <span>/</span>
-            <a href="{{ route('student.units.show', [$course, $module, $learningUnit]) }}" class="underline">{{ $learningUnit->title }}</a>
-        </nav>
-    @endif
-
-    @if (session('status'))
-        <p class="mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">{{ session('status') }}</p>
-    @endif
-
-    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-        <h1 class="mb-2 text-xl font-semibold sm:text-2xl">{{ $activity->title }}</h1>
-        <p class="mb-4 text-sm text-slate-500">{{ strtoupper($activity->type->value) }}</p>
-
-        @if (! empty($configuration['instructions']))
-            <div class="whitespace-pre-wrap text-sm text-slate-700">{{ $configuration['instructions'] }}</div>
+<div class="space-y-8 max-w-4xl mx-auto">
+    <x-page-header 
+        :title="$activity->title" 
+        description="Completion rule: {{ strtoupper($activity->completionRule()->value) }} · Activity completion is not unit progress or mastery."
+    >
+        @if (auth()->user()?->isStudent() && $module)
+            <x-slot name="breadcrumbs">
+                <a href="{{ route('student.courses.show', $course) }}" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">{{ $course->title }}</a>
+                <x-heroicon-m-chevron-right class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+                <a href="{{ route('student.modules.show', [$course, $module]) }}" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">{{ $module->title }}</a>
+                <x-heroicon-m-chevron-right class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+                <a href="{{ route('student.units.show', [$course, $module, $learningUnit]) }}" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">{{ $learningUnit->title }}</a>
+                <x-heroicon-m-chevron-right class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+                <span class="font-medium text-slate-700 dark:text-slate-200 truncate">{{ $activity->title }}</span>
+            </x-slot>
         @endif
 
-        @if (! empty($configuration['prompt']))
-            <p class="mt-4 text-sm text-slate-700"><span class="font-medium">Prompt:</span> {{ $configuration['prompt'] }}</p>
-        @endif
+        <x-slot name="badge">
+            <x-badge variant="primary" dot>{{ strtoupper($activity->type->value) }}</x-badge>
+        </x-slot>
+    </x-page-header>
 
-        @if (! empty($configuration['max_attempts']) || ! empty($configuration['time_limit_minutes']) || ! empty($configuration['language']))
-            <ul class="mt-4 space-y-1 text-sm text-slate-600">
-                @if (! empty($configuration['max_attempts']))
-                    <li>Max attempts: {{ $configuration['max_attempts'] }}</li>
-                @endif
-                @if (! empty($configuration['time_limit_minutes']))
-                    <li>Time limit: {{ $configuration['time_limit_minutes'] }} minutes</li>
-                @endif
-                @if (! empty($configuration['language']))
-                    <li>Language: {{ $configuration['language'] }}</li>
-                @endif
-            </ul>
-        @endif
-        <p class="mt-4 text-sm text-slate-500">Completion rule: {{ strtoupper($activity->completionRule()->value) }} · Activity completion is not unit progress or mastery.</p>
-    </article>
+    <x-card>
+        <div class="space-y-4">
+            @if (! empty($configuration['instructions']))
+                <div>
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Petunjuk</h2>
+                    <div class="whitespace-pre-wrap text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{{ $configuration['instructions'] }}</div>
+                </div>
+            @endif
+
+            @if (! empty($configuration['prompt']))
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <span class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">Prompt:</span>
+                    <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mt-1">{{ $configuration['prompt'] }}</p>
+                </div>
+            @endif
+
+            @if (! empty($configuration['max_attempts']) || ! empty($configuration['time_limit_minutes']) || ! empty($configuration['language']))
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-3">
+                    @if (! empty($configuration['max_attempts']))
+                        <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                            <x-heroicon-o-arrow-path class="w-4 h-4 shrink-0" />
+                            <span>Max attempts: {{ $configuration['max_attempts'] }}</span>
+                        </div>
+                    @endif
+                    @if (! empty($configuration['time_limit_minutes']))
+                        <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                            <x-heroicon-o-clock class="w-4 h-4 shrink-0" />
+                            <span>Time limit: {{ $configuration['time_limit_minutes'] }} minutes</span>
+                        </div>
+                    @endif
+                    @if (! empty($configuration['language']))
+                        <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                            <x-heroicon-o-code-bracket class="w-4 h-4 shrink-0" />
+                            <span>Language: {{ $configuration['language'] }}</span>
+                        </div>
+                    @endif
+                </div>
+            @endif
+        </div>
+    </x-card>
 
     @if (auth()->user()?->isStudent() && $module)
         @php
             $startStatus = \App\Models\ActivityProgress::statusFor($activityProgress ?? null);
         @endphp
-        <section class="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <p class="mb-3 text-sm text-slate-500">{{ strtoupper($startStatus->value) }} · Activity completion is not unit progress or mastery.</p>
-            @if ($errors->has('completion'))
-                <div class="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                    {{ $errors->first('completion') }}
+
+        <x-card>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">{{ strtoupper($startStatus->value) }} · Activity completion is not unit progress or mastery.</p>
+                    <div class="mt-2">
+                        <x-badge variant="{{ $startStatus === \App\Enums\ProgressStatus::Completed ? 'success' : ($startStatus === \App\Enums\ProgressStatus::InProgress ? 'warning' : 'gray') }}" dot>
+                            {{ strtoupper($startStatus->value) }}
+                        </x-badge>
+                    </div>
                 </div>
-            @endif
-            @if ($startStatus === \App\Enums\ProgressStatus::NotStarted)
-                <form method="POST" action="{{ route('student.activities.start', [$course, $module, $learningUnit, $activity]) }}">
-                    @csrf
-                    <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Start activity</button>
-                </form>
-            @elseif ($startStatus !== \App\Enums\ProgressStatus::Completed)
-                <form method="POST" action="{{ route('student.activities.complete', [$course, $module, $learningUnit, $activity]) }}">
-                    @csrf
-                    <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Mark activity complete</button>
-                </form>
-            @endif
-        </section>
+
+                @if ($errors->has('completion'))
+                    <x-alert variant="danger" class="w-full">{{ $errors->first('completion') }}</x-alert>
+                @endif
+
+                <div class="flex gap-2">
+                    @if ($startStatus === \App\Enums\ProgressStatus::NotStarted)
+                        <form method="POST" action="{{ route('student.activities.start', [$course, $module, $learningUnit, $activity]) }}">
+                            @csrf
+                            <x-button variant="primary" type="submit" icon="play">Start activity</x-button>
+                        </form>
+                    @elseif ($startStatus !== \App\Enums\ProgressStatus::Completed)
+                        <form method="POST" action="{{ route('student.activities.complete', [$course, $module, $learningUnit, $activity]) }}">
+                            @csrf
+                            <x-button variant="success" type="submit" icon="check">Mark activity complete</x-button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        </x-card>
 
         @php
             $submissions = $submissions ?? collect();
@@ -75,39 +108,36 @@
             $canSubmit = $startStatus !== \App\Enums\ProgressStatus::NotStarted && $remainingAttempts > 0;
         @endphp
 
-        <section class="mt-6 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 class="mb-2 text-lg font-semibold">Submission</h2>
-            <p class="mb-3 text-sm text-slate-500">Attempt {{ $submissions->count() }}/{{ $activity->maxAttempts() }} · Submission is not a grade.</p>
+        <x-card title="Submission">
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-4">Attempt {{ $submissions->count() }}/{{ $activity->maxAttempts() }} · Submission is not a grade.</p>
 
             @if ($errors->any())
-                <div class="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                    {{ $errors->first() }}
-                </div>
+                <x-alert variant="danger" class="mb-4">{{ $errors->first() }}</x-alert>
             @endif
 
             @if ($canSubmit)
-                <form method="POST" action="{{ route('student.activities.submit', [$course, $module, $learningUnit, $activity]) }}" class="space-y-3">
+                <form method="POST" action="{{ route('student.activities.submit', [$course, $module, $learningUnit, $activity]) }}" class="space-y-4">
                     @csrf
-                    <div>
-                        <label for="payload_body" class="mb-1 block text-sm font-medium">Your response</label>
-                        <textarea id="payload_body" name="payload[body]" rows="5" required class="w-full rounded-md border border-slate-300 px-3 py-2">{{ old('payload.body') }}</textarea>
-                    </div>
-                    <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Submit</button>
+                    <x-form-group label="Your response" name="payload[body]" required>
+                        <x-textarea name="payload[body]" rows="5" required placeholder="Write your response...">{{ old('payload.body') }}</x-textarea>
+                    </x-form-group>
+                    <x-button variant="primary" type="submit" icon="paper-airplane">Submit</x-button>
                 </form>
             @elseif ($startStatus !== \App\Enums\ProgressStatus::NotStarted)
-                <p class="text-sm text-slate-600">No remaining attempts.</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">No remaining attempts.</p>
             @endif
 
             @if ($submissions->isNotEmpty())
-                <ol class="mt-4 space-y-3">
+                <div class="mt-6 space-y-3">
                     @foreach ($submissions as $submission)
-                        <li class="rounded-md border border-slate-200 p-3 text-sm">
-                            <p class="text-slate-500">Attempt {{ $submission->attempt_number }} · Version {{ $submission->version }} · {{ strtoupper($submission->status->value) }}</p>
-                            <p class="mt-1 whitespace-pre-wrap text-slate-700">{{ $submission->payload['body'] ?? '' }}</p>
-                        </li>
+                        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 sm:p-4">
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Attempt {{ $submission->attempt_number }} · Version {{ $submission->version }} · {{ strtoupper($submission->status->value) }}</p>
+                            <p class="mt-2 whitespace-pre-wrap text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{{ $submission->payload['body'] ?? '' }}</p>
+                        </div>
                     @endforeach
-                </ol>
+                </div>
             @endif
-        </section>
+        </x-card>
     @endif
+</div>
 @endsection

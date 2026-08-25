@@ -7,8 +7,8 @@
     x-init="$watch('mobileMenuOpen', value => { document.body.style.overflow = value ? 'hidden' : 'auto'; })"
     {{ $attributes->merge(['class' => 'sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/95 transition-all duration-200 shadow-2xs']) }}
 >
-    <div class="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between pl-4 sm:pl-6 lg:pl-8 pr-0">
-        <div class="flex items-center gap-3 sm:gap-6 py-2">
+    <div class="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3 sm:gap-6 py-2 h-full">
             @if (isset($drawerButton))
                 {{ $drawerButton }}
             @endif
@@ -18,7 +18,7 @@
             </a>
 
             @if (isset($navLinks))
-                <nav class="hidden md:flex items-center gap-1 ml-4">
+                <nav class="hidden md:flex items-center gap-1 ml-3 sm:ml-6 h-full">
                     {{ $navLinks }}
                 </nav>
             @endif

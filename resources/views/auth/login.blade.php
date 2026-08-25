@@ -70,12 +70,7 @@
             </div>
         </form>
 
-        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400">
-            <a href="{{ url('/') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-1 font-medium">
-                <span>←</span>
-                <span>Kembali ke Beranda</span>
-            </a>
-        </div>
+        <x-back-link />
     </x-card>
 
     <div class="hidden lg:flex flex-col max-w-md space-y-4">

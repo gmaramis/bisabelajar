@@ -1,23 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Profile — '.config('app.name'))
+@section('title', 'Profile — '.config('app.name', 'BisaBelajar'))
 
 @section('content')
-    <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 class="mb-4 text-xl font-semibold">Profile</h1>
-        <dl class="space-y-3 text-sm">
-            <div>
-                <dt class="font-medium text-slate-500">Name</dt>
-                <dd>{{ $user->name }}</dd>
-            </div>
-            <div>
-                <dt class="font-medium text-slate-500">Email</dt>
-                <dd>{{ $user->email }}</dd>
-            </div>
-            <div>
-                <dt class="font-medium text-slate-500">Role</dt>
-                <dd>{{ strtoupper($user->role->value) }}</dd>
-            </div>
-        </dl>
-    </div>
+<div class="space-y-8 max-w-3xl mx-auto">
+    <x-page-header 
+        title="Profile" 
+        description="Informasi akun pengguna Anda pada platform BisaBelajar."
+    />
+
+    <x-card>
+        <x-description-list>
+            <x-description-item label="Name" :value="$user->name" class="font-bold" />
+            <x-description-item label="Email" :value="$user->email" />
+            <x-description-item label="Role">
+                <x-badge variant="primary">{{ strtoupper($user->role->value) }}</x-badge>
+            </x-description-item>
+        </x-description-list>
+    </x-card>
+</div>
 @endsection

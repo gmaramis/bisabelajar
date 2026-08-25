@@ -249,4 +249,76 @@ class BladeComponentTest extends TestCase
         $footer->assertSee('BisaBelajar Test — AI-VET Learning Platform')
             ->assertSee('Hak Cipta Dilindungi Undang-Undang');
     }
+
+    public function test_pagination_handles_1000_pages(): void
+    {
+        $pagination = $this->blade('
+            <x-pagination 
+                :current-page="500" 
+                :total-pages="1000" 
+                :total-items="15000" 
+                :per-page="15" 
+            />
+        ');
+
+        $pagination->assertSee('1')
+            ->assertSee('498')
+            ->assertSee('499')
+            ->assertSee('500')
+            ->assertSee('501')
+            ->assertSee('502')
+            ->assertSee('1,000')
+            ->assertSee('dari 1,000')
+            ->assertSee('Menampilkan');
+    }
+
+    public function test_description_list_and_item_render_correctly(): void
+    {
+        $view = $this->blade('
+            <x-description-list>
+                <x-description-item label="Nama Lengkap" value="Budi Santoso" />
+                <x-description-item label="Peran">
+                    <x-badge variant="primary">TUTOR</x-badge>
+                </x-description-item>
+            </x-description-list>
+        ');
+
+        $view->assertSee('Nama Lengkap')
+            ->assertSee('Budi Santoso')
+            ->assertSee('Peran')
+            ->assertSee('TUTOR');
+    }
+
+    public function test_pagination_with_laravel_length_aware_paginator(): void
+    {
+        $items = collect(range(1, 15));
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            15000,
+            15,
+            500,
+            ['path' => 'http://localhost/courses']
+        );
+
+        $view = $this->blade('
+            <x-pagination :paginator="$paginator" />
+        ', ['paginator' => $paginator]);
+
+        $view->assertSee('500')
+            ->assertSee('498')
+            ->assertSee('502')
+            ->assertSee('1,000')
+            ->assertSee('http://localhost/courses?page=501');
+    }
+
+    public function test_back_link_component_renders_correctly(): void
+    {
+        $default = $this->blade('<x-back-link />');
+        $default->assertSee('Kembali ke Beranda')
+            ->assertSee(url('/'));
+
+        $custom = $this->blade('<x-back-link href="/dashboard" label="Kembali ke Dashboard" :bordered="false" />');
+        $custom->assertSee('Kembali ke Dashboard')
+            ->assertSee('/dashboard');
+    }
 }

@@ -1,49 +1,66 @@
 @extends('layouts.app')
 
-@section('title', 'Add material — '.config('app.name'))
+@section('title', 'Add material — '.$learningUnit->title.' — '.config('app.name'))
 
 @section('content')
-    <h1 class="mb-1 text-xl font-semibold">Add material</h1>
-    <p class="mb-4 text-sm text-slate-600">{{ $course->title }} · {{ $module->title }} · {{ $learningUnit->title }}</p>
+<div class="space-y-8 max-w-3xl mx-auto">
+    <x-page-header 
+        title="Add material" 
+        description="Course: {{ $course->title }} · Unit: {{ $learningUnit->title }}"
+    >
+        <x-slot name="breadcrumbs">
+            <a href="{{ route('tutor.workspace') }}" class="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tutor workspace</a>
+            <x-heroicon-m-chevron-right class="h-4 w-4 text-slate-400 dark:text-slate-600 shrink-0" />
+            <a href="{{ route('tutor.courses.edit', $course) }}" class="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate max-w-[100px] sm:max-w-xs">{{ $course->title }}</a>
+            <x-heroicon-m-chevron-right class="h-4 w-4 text-slate-400 dark:text-slate-600 shrink-0" />
+            <a href="{{ route('tutor.modules.edit', [$course, $module]) }}" class="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate max-w-[100px] sm:max-w-xs">{{ $module->title }}</a>
+            <x-heroicon-m-chevron-right class="h-4 w-4 text-slate-400 dark:text-slate-600 shrink-0" />
+            <a href="{{ route('tutor.units.edit', [$course, $module, $learningUnit]) }}" class="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate max-w-[100px] sm:max-w-xs">{{ $learningUnit->title }}</a>
+            <x-heroicon-m-chevron-right class="h-4 w-4 text-slate-400 dark:text-slate-600 shrink-0" />
+            <span class="text-slate-400 dark:text-slate-500">Add material</span>
+        </x-slot>
+    </x-page-header>
 
-    <form method="POST" action="{{ route('tutor.materials.store', [$course, $module, $learningUnit]) }}" enctype="multipart/form-data" class="max-w-xl space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        @csrf
+    <x-card>
+        <form method="POST" action="{{ route('tutor.materials.store', [$course, $module, $learningUnit]) }}" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @if ($errors->any())
+                <x-alert variant="danger" class="mb-4">
+                    {{ $errors->first() }}
+                </x-alert>
+            @endif
 
-        @if ($errors->any())
-            <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                {{ $errors->first() }}
+            <div class="space-y-4">
+                <x-form-group label="Title" name="title" required>
+                    <x-input id="title" name="title" type="text" value="{{ old('title') }}" required placeholder="e.g. Panduan Lengkap Variabel Python" />
+                </x-form-group>
+
+                <x-form-group label="Type" name="type" required>
+                    <x-select id="type" name="type">
+                        @foreach ($types as $type)
+                            <option value="{{ $type->value }}" @selected(old('type') === $type->value)>{{ strtoupper($type->value) }}</option>
+                        @endforeach
+                    </x-select>
+                </x-form-group>
+
+                <x-form-group label="Rich text" name="content" help="Diperlukan untuk tipe RICH_TEXT.">
+                    <x-textarea id="content" name="content" rows="6" placeholder="Isi materi teks...">{{ old('content') }}</x-textarea>
+                </x-form-group>
+
+                <x-form-group label="PDF or PowerPoint file" name="file" help="Diperlukan untuk tipe PDF atau POWERPOINT.">
+                    <input id="file" name="file" type="file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-950 dark:file:text-blue-300 transition-colors">
+                </x-form-group>
+
+                <x-form-group label="External URL" name="external_url" help="Diperlukan untuk tipe EXTERNAL_URL.">
+                    <x-input id="external_url" name="external_url" type="url" value="{{ old('external_url') }}" placeholder="https://..." />
+                </x-form-group>
             </div>
-        @endif
 
-        <div>
-            <label for="title" class="mb-1 block text-sm font-medium">Title</label>
-            <input id="title" name="title" type="text" value="{{ old('title') }}" required class="w-full rounded-md border border-slate-300 px-3 py-2">
-        </div>
-
-        <div>
-            <label for="type" class="mb-1 block text-sm font-medium">Type</label>
-            <select id="type" name="type" class="w-full rounded-md border border-slate-300 px-3 py-2">
-                @foreach ($types as $type)
-                    <option value="{{ $type->value }}" @selected(old('type') === $type->value)>{{ strtoupper($type->value) }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div>
-            <label for="content" class="mb-1 block text-sm font-medium">Rich text</label>
-            <textarea id="content" name="content" rows="6" class="w-full rounded-md border border-slate-300 px-3 py-2">{{ old('content') }}</textarea>
-        </div>
-
-        <div>
-            <label for="file" class="mb-1 block text-sm font-medium">PDF or PowerPoint file</label>
-            <input id="file" name="file" type="file" accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" class="w-full text-sm">
-        </div>
-
-        <div>
-            <label for="external_url" class="mb-1 block text-sm font-medium">External URL</label>
-            <input id="external_url" name="external_url" type="url" value="{{ old('external_url') }}" class="w-full rounded-md border border-slate-300 px-3 py-2">
-        </div>
-
-        <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">Save material</button>
-    </form>
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <x-button variant="outline" href="{{ route('tutor.units.edit', [$course, $module, $learningUnit]) }}">Batal</x-button>
+                <x-button variant="primary" type="submit" icon="check">Save material</x-button>
+            </div>
+        </form>
+    </x-card>
+</div>
 @endsection

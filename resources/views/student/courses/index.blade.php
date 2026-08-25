@@ -1,25 +1,46 @@
 @extends('layouts.app')
 
-@section('title', 'My Courses — '.config('app.name'))
+@section('title', 'My Courses — '.config('app.name', 'BisaBelajar'))
 
 @section('content')
-    <h1 class="mb-4 text-xl font-semibold sm:text-2xl">My Courses</h1>
-    <p class="mb-4 text-sm text-slate-600">Active enrollments for {{ $user->name }}.</p>
+<div class="space-y-8">
+    <x-page-header 
+        title="My Courses" 
+        description="Active enrollments for {{ $user->name }}."
+    >
+        <x-slot name="actions">
+            <x-button variant="secondary" size="sm" href="{{ route('courses.index') }}">Course catalog</x-button>
+        </x-slot>
+    </x-page-header>
 
-    @if (session('status'))
-        <p class="mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">{{ session('status') }}</p>
-    @endif
-
-    @if ($enrollments->isEmpty())
-        <p class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600 sm:p-6">You have no active enrollments yet.</p>
+    @if($enrollments->isEmpty())
+        <div class="flex flex-col items-center justify-center py-12 sm:py-16 text-center">
+            <div class="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+                <x-heroicon-o-academic-cap class="w-7 h-7 text-slate-400 dark:text-slate-500" />
+            </div>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">You have no active enrollments yet.</p>
+            <x-button variant="primary" size="sm" href="{{ route('courses.index') }}" class="mt-4">Course catalog</x-button>
+        </div>
     @else
-        <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            @foreach ($enrollments as $enrollment)
-                <li class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                    <a href="{{ route('student.courses.show', $enrollment->course) }}" class="font-medium hover:underline">{{ $enrollment->course->title }}</a>
-                    <p class="text-sm text-slate-500">{{ strtoupper($enrollment->status->value) }}</p>
-                </li>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach($enrollments as $enrollment)
+                <x-card>
+                    <h3 class="text-base sm:text-lg font-bold leading-snug text-slate-900 dark:text-white mb-2">
+                        <a href="{{ route('student.courses.show', $enrollment->course) }}" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                            {{ $enrollment->course->title }}
+                        </a>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-4">{{ Str::limit($enrollment->course->description, 100) }}</p>
+                    <x-badge variant="primary" dot>{{ strtoupper($enrollment->status->value) }}</x-badge>
+                </x-card>
             @endforeach
-        </ul>
+        </div>
+
+        @if ($enrollments instanceof \Illuminate\Contracts\Pagination\Paginator && $enrollments->hasPages())
+            <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800">
+                <x-pagination :paginator="$enrollments" />
+            </div>
+        @endif
     @endif
+</div>
 @endsection
