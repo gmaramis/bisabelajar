@@ -807,3 +807,24 @@ Pengujian antarmuka menyeluruh di atas browser **Google Chrome sungguhan (via Ch
   ```bash
   php artisan dusk
   ```
+
+---
+
+## 14. Standar Bersih Kode & Larangan Komentar Frontend (Zero-Comment Policy)
+
+Setiap pengembang dan agen AI wajib menjaga kebersihan, ketepatan, dan kerapian kode antarmuka (Blade, JavaScript, CSS).
+
+### 14.1. Aturan Mutlak Zero-Comment:
+1. **Larangan Komentar pada Template Frontend (Strict Zero-Comment Policy):**
+   - Dilarang keras menuliskan komentar dalam bentuk apa pun pada file template Blade, markup HTML, atau komponen antarmuka pengguna (`resources/views/`).
+   - Kode harus bersifat *self-documenting*, ringkas, dan ekspresif dengan mengandalkan struktur Blade dan penamaan utility class Tailwind yang jelas.
+   - Dilarang menyisipkan penanda struktural (seperti `{{-- Header --}}`, `{{-- Form Panel --}}`), komentar dekoratif, maupun komentar informal/percakapan.
+
+2. **Larangan Mutlak Referensi Brand Eksternal & File Percakapan:**
+   - Dilarang keras menyebutkan nama brand pihak ketiga (seperti Tencent, dsb.) atau warna palet eksternal di dalam kode maupun styling antarmuka.
+   - Dilarang menyebutkan nama file artefak referensi chat (seperti `image.png`, `code.png`, `i1.jpg`) di dalam codebase.
+   - Gunakan selalu nama dan konsep domain resmi platform: *BisaBelajar*, *AI-VET Platform*, *Socratic NEXUS*, *Isolated Coding Sandbox*.
+
+3. **Larangan Komentar HTML Mentah:**
+   - Tidak boleh ada komentar HTML mentah (`<!-- ... -->`) yang dapat bocor ke output browser publik.
+

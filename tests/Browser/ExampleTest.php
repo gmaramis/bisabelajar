@@ -15,7 +15,8 @@ class ExampleTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->resize(360, 800)
                 ->visit('/')
-                ->assertSee('Documentation');
+                ->assertSee('BisaBelajar')
+                ->assertSee('AI-VET Platform');
         });
     }
 }

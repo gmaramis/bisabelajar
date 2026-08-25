@@ -1,55 +1,104 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
-@section('title', 'Log in — '.config('app.name'))
+@section('title', 'Masuk')
+@section('subtitle', 'Masuk ke Akun')
 
 @section('content')
-    <div class="mx-auto max-w-md rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 class="mb-1 text-xl font-semibold">Log in</h1>
-        <p class="mb-6 text-sm text-slate-600">Sign in to BisaBelajar as a student or tutor.</p>
+<div class="w-full flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16">
+    
+    <x-card class="w-full max-w-md shadow-xs sm:shadow-md">
+        <div class="mb-6">
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Masuk ke Akun
+            </h1>
+            <p class="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                Silakan masuk dengan kredensial akun Anda.
+            </p>
+        </div>
 
         @if ($errors->any())
-            <div class="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <x-alert variant="danger" class="mb-5">
                 {{ $errors->first() }}
-            </div>
+            </x-alert>
         @endif
 
         <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
             @csrf
 
-            <div>
-                <label for="email" class="mb-1 block text-sm font-medium">Email</label>
-                <input
+            <x-form-group label="Alamat Email" name="email" required>
+                <x-input
                     id="email"
                     name="email"
                     type="email"
-                    value="{{ old('email') }}"
+                    :value="old('email')"
                     required
                     autofocus
                     autocomplete="username"
-                    class="w-full rounded-md border border-slate-300 px-3 py-2"
-                >
-            </div>
+                    placeholder="nama@email.com"
+                    icon="envelope"
+                />
+            </x-form-group>
 
-            <div>
-                <label for="password" class="mb-1 block text-sm font-medium">Password</label>
-                <input
+            <x-form-group label="Kata Sandi" name="password" required>
+                <x-input
                     id="password"
                     name="password"
                     type="password"
                     required
                     autocomplete="current-password"
-                    class="w-full rounded-md border border-slate-300 px-3 py-2"
-                >
+                    placeholder="••••••••"
+                    togglePassword
+                    icon="lock-closed"
+                />
+            </x-form-group>
+
+            <div class="flex items-center justify-between pt-1">
+                <x-checkbox 
+                    name="remember" 
+                    label="Ingat saya" 
+                />
             </div>
 
-            <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="remember">
-                Remember me
-            </label>
-
-            <button type="submit" class="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white">
-                Log in
-            </button>
+            <div class="pt-2">
+                <x-button 
+                    type="submit" 
+                    variant="primary" 
+                    class="w-full"
+                >
+                    Masuk
+                </x-button>
+            </div>
         </form>
+
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400">
+            <a href="{{ url('/') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-1 font-medium">
+                <span>←</span>
+                <span>Kembali ke Beranda</span>
+            </a>
+        </div>
+    </x-card>
+
+    <div class="hidden lg:flex flex-col max-w-md space-y-4">
+        <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">
+            Pembelajaran Vokasi Berbasis AI — AI-VET Pilot
+        </h2>
+
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+            Akses kurikulum modular adaptif, latihan coding langsung di isolated sandbox, dan pendampingan cerdas Socratic NEXUS tanpa batas pertemuan kaku.
+        </p>
+
+        <div class="pt-2">
+            <x-button 
+                href="{{ url('/#about') }}" 
+                variant="outline" 
+                size="sm"
+                icon="arrow-right"
+                iconPosition="right"
+            >
+                Pelajari Lebih Lanjut
+            </x-button>
+        </div>
     </div>
+
+</div>
 @endsection
