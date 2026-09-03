@@ -14,6 +14,7 @@ use App\Http\Controllers\Student\EnrollmentController;
 use App\Http\Controllers\Student\LearningController;
 use App\Http\Controllers\Student\LearningProgressController;
 use App\Http\Controllers\Student\ProgrammingActivityController as StudentProgrammingActivityController;
+use App\Http\Controllers\Student\AiTutorController;
 use App\Http\Controllers\Tutor\ActivityController;
 use App\Http\Controllers\Tutor\CourseController;
 use App\Http\Controllers\Tutor\LearningMaterialController;
@@ -66,6 +67,7 @@ Route::middleware('auth')->group(function (): void {
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming/run', [StudentProgrammingActivityController::class, 'run'])->name('student.activities.programming.run');
         Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming/submit', [StudentProgrammingActivityController::class, 'submit'])->name('student.activities.programming.submit');
         Route::get('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/programming/history', [StudentProgrammingActivityController::class, 'history'])->name('student.activities.programming.history');
+        Route::post('my-courses/{course:slug}/modules/{module}/units/{learningUnit}/activities/{activity}/ai-hint', [AiTutorController::class, 'hint'])->name('student.activities.ai-hint');
     });
 
     Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function (): void {

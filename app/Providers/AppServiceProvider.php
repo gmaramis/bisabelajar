@@ -22,7 +22,10 @@ use App\Policies\LearningMaterialPolicy;
 use App\Policies\LearningProgressPolicy;
 use App\Policies\LearningUnitPolicy;
 use App\Policies\ModulePolicy;
+use App\Services\Ai\AiClientManager;
+use App\Services\Ai\Prompts\ReassessmentPromptBuilder;
 use App\Services\Research\Reassessment\DeterministicReassessmentCandidateGenerator;
+use App\Services\Research\Reassessment\LlmReassessmentCandidateGenerator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,11 +36,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            ReassessmentCandidateGenerator::class,
-            DeterministicReassessmentCandidateGenerator::class,
-        );
+        if ($this->app->runningUnitTests()) {
+            $this->app->bind(
+                ReassessmentCandidateGenerator::class,
+                DeterministicReassessmentCandidateGenerator::class,
+            );
+        } else {
+            $this->app->bind(ReassessmentCandidateGenerator::class, function () {
+                return new LlmReassessmentCandidateGenerator(
+                    new AiClientManager(),
+                    new ReassessmentPromptBuilder(),
+                    new DeterministicReassessmentCandidateGenerator(),
+                );
+            });
+        }
     }
+
 
     /**
      * Bootstrap any application services.

@@ -134,6 +134,17 @@
                         <span class="hidden sm:inline">Format</span>
                     </button>
 
+                    <div id="nexus-hint-trigger" class="hidden">
+                        <button
+                            type="button"
+                            onclick="window.dispatchEvent(new CustomEvent('nexus-hint', { detail: { errorMessage: window.__lastErrorMessage ?? null, testLabel: window.__lastTestLabel ?? null } }))"
+                            class="inline-flex items-center justify-center gap-2 font-semibold text-xs sm:text-sm min-h-[44px] sm:min-h-[40px] rounded-lg px-4 py-2 bg-sky-600 text-white hover:bg-sky-700 active:bg-sky-800 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 select-none active:scale-[0.98] shadow-xs"
+                        >
+                            <x-heroicon-o-light-bulb class="w-4 h-4" />
+                            <span>Petunjuk NEXUS</span>
+                        </button>
+                    </div>
+
                     <div class="ml-auto text-xs text-slate-500 dark:text-slate-400">
                         <span id="execution-time"></span>
                     </div>
@@ -154,6 +165,15 @@
                     </div>
                     <div id="test-results-content" class="p-4 space-y-2 max-h-[300px] overflow-auto bg-slate-900 dark:bg-slate-950 custom-scrollbar"></div>
                 </div>
+
+                @if (auth()->user()?->isStudent() && $module && $course)
+                    <div class="px-4 py-3 border-t border-slate-200 dark:border-slate-800">
+                        <x-ai-hint-panel
+                            :hint-url="route('student.activities.ai-hint', [$course, $module, $learningUnit, $activity])"
+                            :attempt-count="$submissions->count() + 1"
+                        />
+                    </div>
+                @endif
             </div>
         @endif
 
@@ -440,6 +460,12 @@
         statusEl.textContent = statusLabels[status] || status;
         statusEl.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ' +
             (status === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400');
+
+        if (compileError || runtimeError || (testSummary && testSummary.passed < testSummary.total)) {
+            window.__lastErrorMessage = compileError || runtimeError || (testSummary ? `Passed ${testSummary.passed}/${testSummary.total} tests` : null);
+            const trigger = document.getElementById('nexus-hint-trigger');
+            if (trigger) trigger.classList.remove('hidden');
+        }
 
         loadHistory();
     }
